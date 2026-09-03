@@ -1,0 +1,61 @@
+---
+import { clients, services, site, validationItems } from "@data/site";
+---
+
+<footer class="site-footer">
+  <div class="footer-shell">
+    <section class="footer-brand">
+      <img src="/assets/brand/etraction-logo-white.svg" alt="Etraction" width="329" height="33" />
+      <p>
+        Agência de performance para e-commerce com estratégia, mídia, CRO, CRM,
+        marketplace, design e acompanhamento próximo.
+      </p>
+      <div class="footer-social">
+        <a href={site.instagram} target="_blank" rel="noreferrer">Instagram</a>
+        <span>{site.linkedin}</span>
+      </div>
+    </section>
+
+    <nav aria-label="Rodapé: serviços">
+      <h2>Serviços</h2>
+      {services.map((service) => (
+        <a href={`/servicos/${service.slug}/`}>{service.shortName}</a>
+      ))}
+    </nav>
+
+    <nav aria-label="Rodapé: páginas">
+      <h2>Institucional</h2>
+      <a href="/cases/">Cases</a>
+      <a href="/sobre/">Sobre</a>
+      <a href="/blog/">Conteúdos</a>
+      <a href="/carreiras/">Carreiras</a>
+      <a href="/contato/">Contato</a>
+      <a href="/politica-de-privacidade/">Política de privacidade</a>
+      <a href="/lgpd/">LGPD</a>
+      <button class="footer-cookie-button" type="button" data-open-cookie-preferences>
+        Preferências de cookies
+      </button>
+    </nav>
+
+    <section class="footer-contact">
+      <h2>Contato</h2>
+      <p>CNPJ: {site.cnpj}</p>
+      <p>{site.address}</p>
+      <p>Telefone: {site.phone}</p>
+      <p>WhatsApp: {site.whatsapp}</p>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+    </section>
+  </div>
+
+  <div class="footer-proof">
+    <p>Clientes citados no site atual, a validar antes da publicação:</p>
+    <ul>
+      {clients.slice(0, 6).map((client) => <li>{client.name}</li>)}
+    </ul>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© {new Date().getFullYear()} Etraction. Todos os direitos reservados.</p>
+    <p>Itens pendentes de validação: {validationItems.length}</p>
+  </div>
+</footer>

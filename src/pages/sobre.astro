@@ -1,0 +1,132 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { company, metrics, site } from "@data/site";
+import { breadcrumbSchema } from "@utils/schema";
+---
+
+<BaseLayout
+  title="Sobre a Etraction | Estratégia para e-commerce"
+  description="Conheça a trajetória, liderança, valores e forma de trabalho da Etraction, agência de performance para e-commerce em Rio do Sul, Santa Catarina."
+  structuredData={breadcrumbSchema([{ label: "Sobre", href: "/sobre/" }])}
+>
+  <Breadcrumbs items={[{ label: "Sobre", href: "/sobre/" }]} />
+  <section class="page-hero" data-animate>
+    <h1>A Etraction nasceu para tratar crescimento de e-commerce como operação contínua.</h1>
+    <p>
+      A empresa reúne especialistas em aquisição, conversão, relacionamento,
+      marketplace, design e acompanhamento para atuar perto do cliente e dos
+      indicadores que movem a loja.
+    </p>
+  </section>
+
+  <section class="section about-grid" data-animate>
+    <figure class="about-photo">
+      <picture>
+        <source srcset="/assets/team/time-etraction-evento.avif" type="image/avif" />
+        <source srcset="/assets/team/time-etraction-evento.webp" type="image/webp" />
+        <img
+          src="/assets/team/time-etraction-evento.png"
+          alt="Equipe da Etraction em evento de e-commerce"
+          width="760"
+          height="560"
+          loading="lazy"
+        />
+      </picture>
+    </figure>
+    <div>
+      <h2>Proximidade com o cliente, leitura técnica e disciplina de execução.</h2>
+      <p>
+        A narrativa pública da Etraction aponta para crescimento escalável, alta
+        performance, inovação, foco em resultados e dedicação ao cliente. No novo
+        site, esses conceitos aparecem como comportamento de operação, não como
+        slogans isolados.
+      </p>
+      <ul class="hero-metric-strip">
+        {metrics.map((metric) => (
+          <li>
+            <strong>{metric.prefix}{metric.value}{metric.suffix}</strong>
+            <span>{metric.label}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" data-animate>
+    <div class="section-header">
+      <h2>Missão, visão e valores ganham função prática no relacionamento.</h2>
+      <p>
+        As formulações abaixo partem do conteúdo atual e precisam de aprovação
+        editorial final antes de publicação.
+      </p>
+    </div>
+    <div class="problem-table">
+      <article>
+        <h3>Missão</h3>
+        <p>{company.mission}</p>
+      </article>
+      <article>
+        <h3>Visão</h3>
+        <p>{company.vision}</p>
+      </article>
+      <article>
+        <h3>Valores</h3>
+        <p>{company.values.join(" ")}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" data-animate>
+    <div class="section-header">
+      <h2>Liderança apresentada com dados públicos e campos a validar.</h2>
+      <p>
+        Cargos, biografias, fotos adicionais e links de LinkedIn devem ser
+        confirmados com autorização antes da publicação.
+      </p>
+    </div>
+    <div class="leader-grid">
+      {company.administrators.map((leader) => (
+        <article class="leader-card">
+          <img src={leader.photo} alt={`Foto de ${leader.name}`} width="720" height="900" loading="lazy" />
+          <div>
+            <h3>{leader.name}</h3>
+            <p><strong>{leader.role}</strong></p>
+            <p>{leader.bio}</p>
+            <p class="status-note">Status: {leader.status}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section" data-animate>
+    <div class="section-header">
+      <h2>Linha do tempo preparada para marcos reais.</h2>
+      <p>
+        Datas não confirmadas continuam como campos editáveis para evitar
+        preenchimento artificial de história, certificações e conquistas.
+      </p>
+    </div>
+    <ol class="timeline-list">
+      {company.timeline.map((item) => (
+        <li>
+          <strong>{item.year}</strong>
+          <div>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="cta-band" data-animate>
+    <h2>Dados empresariais usados no site.</h2>
+    <p>
+      CNPJ {site.cnpj}. Sede em {company.headquarters.value}. Endereço:
+      {` ${site.address}`}. Telefone e WhatsApp seguem a confirmar por divergência
+      entre pontos do site atual.
+    </p>
+  </section>
+</BaseLayout>

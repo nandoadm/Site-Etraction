@@ -1,0 +1,45 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import CommercialForm from "@components/forms/CommercialForm.astro";
+import { site, validationItems } from "@data/site";
+import { breadcrumbSchema } from "@utils/schema";
+---
+
+<BaseLayout
+  title="Contato comercial | Etraction"
+  description="Fale com a Etraction sobre crescimento, performance, CRO, mídia paga, CRM, marketplace, design e estratégia para e-commerce."
+  structuredData={breadcrumbSchema([{ label: "Contato", href: "/contato/" }])}
+>
+  <Breadcrumbs items={[{ label: "Contato", href: "/contato/" }]} />
+  <section class="page-hero" data-animate>
+    <h1>Conte o cenário da sua loja para direcionarmos a conversa comercial.</h1>
+    <p>
+      O primeiro contato deve ser curto, mas precisa trazer contexto suficiente
+      para entender faturamento, desafio principal, loja, serviço de interesse e
+      urgência de decisão.
+    </p>
+  </section>
+
+  <section class="contact-layout">
+    <div data-animate>
+      <CommercialForm />
+    </div>
+    <aside class="contact-panel" data-animate>
+      <h2>Canais e dados</h2>
+      <p><strong>E-mail:</strong> <a href={`mailto:${site.email}`}>{site.email}</a></p>
+      <p><strong>Telefone:</strong> {site.phone}</p>
+      <p><strong>WhatsApp:</strong> {site.whatsapp}</p>
+      <p><strong>Endereço:</strong> {site.address}</p>
+      <p><strong>CNPJ:</strong> {site.cnpj}</p>
+      <p class="status-note">
+        O site atual apresenta telefone no rodapé e número diferente nos botões
+        de WhatsApp. A publicação deve usar o contato oficial validado.
+      </p>
+      <h3>Antes de publicar</h3>
+      <ul>
+        {validationItems.slice(0, 5).map((item) => <li>{item}</li>)}
+      </ul>
+    </aside>
+  </section>
+</BaseLayout>

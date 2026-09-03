@@ -1,0 +1,105 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import CommercialForm from "@components/forms/CommercialForm.astro";
+import { services, type Service } from "@data/site";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "@utils/schema";
+
+export function getStaticPaths() {
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service }
+  }));
+}
+
+const { service } = Astro.props as { service: Service };
+---
+
+<BaseLayout
+  title={`${service.name} | Etraction`}
+  description={service.summary}
+  structuredData={[
+    breadcrumbSchema([
+      { label: "Serviços", href: "/servicos/" },
+      { label: service.name, href: `/servicos/${service.slug}/` }
+    ]),
+    serviceSchema(service),
+    faqSchema(service.faq)
+  ]}
+>
+  <Breadcrumbs items={[
+    { label: "Serviços", href: "/servicos/" },
+    { label: service.name, href: `/servicos/${service.slug}/` }
+  ]} />
+
+  <section class="page-hero" data-animate>
+    <h1>{service.name}</h1>
+    <p>{service.commercialIntro}</p>
+    <div class="hero-actions">
+      <a class="button button-primary" href="/contato/">Falar sobre este serviço</a>
+      <a class="button button-secondary" href="/cases/">Ver estrutura de cases</a>
+    </div>
+  </section>
+
+  <div class="service-grid">
+    <div class="service-main">
+      <section class="content-block" data-animate>
+        <h2>Como a frente atua no crescimento.</h2>
+        <p>{service.summary}</p>
+      </section>
+
+      <section class="content-block" data-animate>
+        <h2>Problemas que resolve.</h2>
+        <ul>{service.problems.map((item) => <li>{item}</li>)}</ul>
+      </section>
+
+      <section class="content-block" data-animate>
+        <h2>Entregas principais.</h2>
+        <ul>{service.deliveries.map((item) => <li>{item}</li>)}</ul>
+      </section>
+
+      <section class="content-block" data-animate>
+        <h2>Indicadores acompanhados.</h2>
+        <ul>{service.indicators.map((item) => <li>{item}</li>)}</ul>
+      </section>
+
+      <section class="content-block" data-animate>
+        <h2>Ferramentas e dados usados.</h2>
+        <ul>{service.tools.map((item) => <li>{item}</li>)}</ul>
+      </section>
+
+      <section class="content-block" data-animate>
+        <h2>Metodologia aplicada.</h2>
+        <ul>{service.methodology.map((item) => <li>{item}</li>)}</ul>
+      </section>
+
+      <section class="content-block" data-animate>
+        <h2>Perguntas frequentes.</h2>
+        <div class="faq-list">
+          {service.faq.map((item) => (
+            <details>
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section class="content-block" data-animate>
+        <h2>Converse com a Etraction sobre {service.shortName}.</h2>
+        <CommercialForm />
+      </section>
+    </div>
+
+    <aside class="specialist-panel" data-animate>
+      <img src={service.specialist.photo} alt={`Foto de ${service.specialist.name}`} width="720" height="900" loading="lazy" />
+      <div>
+        <h2>Especialista responsável</h2>
+        <h3>{service.specialist.name}</h3>
+        <p><strong>{service.specialist.role}</strong></p>
+        <p>{service.specialist.bio}</p>
+      </div>
+      <p class="status-note">Foto, cargo e apresentação precisam ser validados antes da publicação.</p>
+    </aside>
+  </div>
+</BaseLayout>

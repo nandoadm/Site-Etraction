@@ -1,0 +1,60 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { getBlogPostsForBuild, type BlogPost } from "@utils/wordpress";
+import { articleSchema, breadcrumbSchema } from "@utils/schema";
+
+export async function getStaticPaths() {
+  const posts = await getBlogPostsForBuild();
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post }
+  }));
+}
+
+const { post } = Astro.props as { post: BlogPost };
+const schemas: Record<string, unknown>[] = [
+  breadcrumbSchema([
+    { label: "Conteúdos", href: "/blog/" },
+    { label: post.title, href: `/blog/${post.slug}/` }
+  ])
+];
+
+if (post.status === "validado_publicamente") {
+  schemas.push(articleSchema(post));
+}
+---
+
+<BaseLayout
+  title={`${post.title} | Etraction`}
+  description={post.description}
+  noindex={post.status !== "validado_publicamente"}
+  structuredData={schemas}
+>
+  <Breadcrumbs items={[
+    { label: "Conteúdos", href: "/blog/" },
+    { label: post.title, href: `/blog/${post.slug}/` }
+  ]} />
+  <article class="article-detail" data-animate>
+    <h1>{post.title}</h1>
+    <p>{post.description}</p>
+    {post.content ? (
+      <div class="wp-content" set:html={post.content} />
+    ) : (
+      <>
+        <p class="status-note">
+          Template em noindex até a migração do conteúdo real. Autor, data de
+          publicação, atualização e fontes precisam vir do WordPress ou do CMS final.
+        </p>
+        <h2>Estrutura editorial prevista.</h2>
+        <ul>
+          <li>Autor real e experiência prática.</li>
+          <li>Data de publicação e data de atualização.</li>
+          <li>Fontes quando o tema exigir comprovação.</li>
+          <li>Links internos para serviços, cases, plataformas e materiais relacionados.</li>
+          <li>Schema BlogPosting somente quando o conteúdo estiver publicado de forma definitiva.</li>
+        </ul>
+      </>
+    )}
+  </article>
+</BaseLayout>

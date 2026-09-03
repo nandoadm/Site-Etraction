@@ -1,0 +1,21 @@
+---
+import { problems } from "@data/site";
+---
+
+<section class="section problems-section" data-animate>
+  <div class="section-header">
+    <h2>Quando a operação de e-commerce cresce, os gargalos mudam de lugar.</h2>
+    <p>
+      A atuação da Etraction conecta aquisição, conversão, relacionamento,
+      marketplace, criatividade e acompanhamento para atacar o problema certo.
+    </p>
+  </div>
+  <div class="problem-table">
+    {problems.map((item) => (
+      <article>
+        <h3>{item.issue}</h3>
+        <p>{item.response}</p>
+      </article>
+    ))}
+  </div>
+</section>

@@ -1,0 +1,41 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import TalentForm from "@components/forms/TalentForm.astro";
+import { talentAreas } from "@data/site";
+import { breadcrumbSchema } from "@utils/schema";
+---
+
+<BaseLayout
+  title="Carreiras e banco de talentos | Etraction"
+  description="Cadastre seu perfil no banco de talentos da Etraction para oportunidades em performance, CRO, CRM, marketplace, design e e-commerce."
+  structuredData={breadcrumbSchema([{ label: "Carreiras", href: "/carreiras/" }])}
+>
+  <Breadcrumbs items={[{ label: "Carreiras", href: "/carreiras/" }]} />
+  <section class="page-hero" data-animate>
+    <h1>Banco de talentos para profissionais que querem trabalhar com e-commerce.</h1>
+    <p>
+      A página coleta perfis de forma organizada, com consentimento claro para
+      armazenamento e uso exclusivo em processos seletivos da Etraction.
+    </p>
+  </section>
+
+  <section class="contact-layout">
+    <div data-animate>
+      <TalentForm />
+    </div>
+    <aside class="contact-panel" data-animate>
+      <h2>Áreas previstas</h2>
+      <ul>{talentAreas.map((area) => <li>{area}</li>)}</ul>
+      <h3>Privacidade</h3>
+      <p>
+        Os dados enviados pelo banco de talentos devem ser usados somente para
+        avaliação de oportunidades profissionais, com retenção, acesso e descarte
+        definidos pela política de privacidade aprovada.
+      </p>
+      <p class="status-note">
+        Limite de arquivo previsto: 5 MB. Formatos aceitos: PDF, DOC e DOCX.
+      </p>
+    </aside>
+  </section>
+</BaseLayout>

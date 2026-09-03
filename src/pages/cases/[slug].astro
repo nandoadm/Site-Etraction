@@ -1,0 +1,83 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { caseStudies, type CaseStudy } from "@data/site";
+import { breadcrumbSchema } from "@utils/schema";
+
+export function getStaticPaths() {
+  return caseStudies.map((caseStudy) => ({
+    params: { slug: caseStudy.slug },
+    props: { caseStudy }
+  }));
+}
+
+const { caseStudy } = Astro.props as { caseStudy: CaseStudy };
+---
+
+<BaseLayout
+  title={`${caseStudy.client} | Case Etraction`}
+  description={`Case Etraction: ${caseStudy.challenge}`}
+  noindex={caseStudy.status !== "validado_publicamente"}
+  structuredData={breadcrumbSchema([
+    { label: "Cases", href: "/cases/" },
+    { label: caseStudy.client, href: `/cases/${caseStudy.slug}/` }
+  ])}
+>
+  <Breadcrumbs items={[
+    { label: "Cases", href: "/cases/" },
+    { label: caseStudy.client, href: `/cases/${caseStudy.slug}/` }
+  ]} />
+
+  <section class="page-hero" data-animate>
+    <h1>{caseStudy.client}</h1>
+    <p>{caseStudy.challenge}</p>
+  </section>
+
+  <div class="service-grid">
+    <article class="case-detail">
+      <section class="content-block">
+        <h2>Contexto e cenário inicial.</h2>
+        <p>{caseStudy.initialScenario}</p>
+      </section>
+      <section class="content-block">
+        <h2>Estratégia aplicada.</h2>
+        <p>{caseStudy.strategy}</p>
+      </section>
+      <section class="content-block">
+        <h2>Execução e serviços envolvidos.</h2>
+        <ul>{caseStudy.services.map((service) => <li>{service}</li>)}</ul>
+      </section>
+      <section class="content-block">
+        <h2>Resultados.</h2>
+        <ul>
+          <li>Resultado percentual: {caseStudy.percentageResult}</li>
+          <li>Resultado absoluto: {caseStudy.absoluteResult}</li>
+          <li>Fonte dos dados: {caseStudy.source}</li>
+        </ul>
+      </section>
+      <section class="content-block">
+        <h2>Depoimento autorizado.</h2>
+        <p>{caseStudy.testimonial}</p>
+      </section>
+    </article>
+
+    <aside class="case-sidebar">
+      <h2>Dados do case</h2>
+      <dl>
+        <div>
+          <dt>Segmento</dt>
+          <dd>{caseStudy.segment}</dd>
+        </div>
+        <div>
+          <dt>Período</dt>
+          <dd>{caseStudy.period}</dd>
+        </div>
+        <div>
+          <dt>Status</dt>
+          <dd>{caseStudy.status === "placeholder" ? "Placeholder editorial" : caseStudy.status}</dd>
+        </div>
+      </dl>
+      <p class="status-note">Página em noindex até receber dados reais e autorização.</p>
+    </aside>
+  </div>
+</BaseLayout>

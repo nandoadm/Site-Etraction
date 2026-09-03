@@ -1,0 +1,49 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import ServicesOverview from "@components/sections/ServicesOverview.astro";
+import Methodology from "@components/sections/Methodology.astro";
+import { services } from "@data/site";
+import { breadcrumbSchema } from "@utils/schema";
+---
+
+<BaseLayout
+  title="Serviços de performance para e-commerce | Etraction"
+  description="Conheça as frentes de CRO, Meta Ads, Google Ads, CRM, e-mail marketing, marketplace, sucesso do cliente e design para e-commerce."
+  structuredData={breadcrumbSchema([{ label: "Serviços", href: "/servicos/" }])}
+>
+  <Breadcrumbs items={[{ label: "Serviços", href: "/servicos/" }]} />
+  <section class="page-hero" data-animate>
+    <h1>Serviços que conectam tráfego, conversão, relacionamento e operação.</h1>
+    <p>
+      A Etraction organiza especialistas por frente, mas a leitura de crescimento
+      acontece em conjunto. Cada serviço tem indicadores próprios e impacto no
+      resultado geral da loja.
+    </p>
+  </section>
+  <ServicesOverview />
+  <section class="section" data-animate>
+    <div class="section-header">
+      <h2>O serviço certo depende do gargalo certo.</h2>
+      <p>
+        Quando o diagnóstico mostra que o problema está em oferta, página, base,
+        canal, estoque ou rotina de acompanhamento, a composição do projeto muda.
+      </p>
+    </div>
+    <div class="service-list">
+      {services.map((service) => (
+        <article class="service-row">
+          <div>
+            <h3>{service.intent}</h3>
+            <p>{service.commercialIntro}</p>
+          </div>
+          <div class="service-meta">
+            <span>{service.name}</span>
+            <a href={`/servicos/${service.slug}/`}>Abrir página do serviço</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+  <Methodology />
+</BaseLayout>

@@ -1,0 +1,20 @@
+---
+import { clients } from "@data/site";
+---
+
+<section class="section proof-section" data-animate>
+  <div class="section-header">
+    <h2>Mais de 100 e-commerces já apareceram na trajetória da Etraction.</h2>
+    <p>
+      A lista abaixo parte dos logos públicos encontrados no site atual. A versão
+      final deve validar autorização de uso, relação vigente e grafismo correto.
+    </p>
+  </div>
+  <ul class="client-logo-grid" aria-label="Clientes citados publicamente">
+    {clients.map((client) => (
+      <li>
+        <img src={client.logo} alt={`Logo ${client.name}`} width="150" height="62" loading="lazy" />
+      </li>
+    ))}
+  </ul>
+</section>

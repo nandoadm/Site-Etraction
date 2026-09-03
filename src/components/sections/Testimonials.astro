@@ -1,0 +1,25 @@
+---
+import { testimonials } from "@data/site";
+---
+
+<section class="section testimonials-section" data-animate>
+  <div class="section-header">
+    <h2>Depoimentos reais entram como parte da narrativa de resultado.</h2>
+    <p>
+      Os nomes abaixo aparecem no site atual. A versão final deve validar texto,
+      cargo, relação atual e autorização de uso com cada cliente.
+    </p>
+  </div>
+  <div class="testimonial-list">
+    {testimonials.map((testimonial) => (
+      <article>
+        <p>{testimonial.summary}</p>
+        <footer>
+          <strong>{testimonial.author}</strong>
+          <span>{testimonial.role}, {testimonial.company}</span>
+          <small>{testimonial.segment}. Depoimento a confirmar.</small>
+        </footer>
+      </article>
+    ))}
+  </div>
+</section>

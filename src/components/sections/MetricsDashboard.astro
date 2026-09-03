@@ -1,0 +1,46 @@
+---
+import { metrics } from "@data/site";
+---
+
+<section class="section metrics-section" data-animate>
+  <div class="metrics-copy">
+    <h2>Resultados precisam ser lidos como operação, não como peças soltas.</h2>
+    <p>
+      A Etraction trabalha a leitura conjunta de investimento, receita, conversão,
+      recompra, canal, estoque e margem para orientar decisões de crescimento.
+    </p>
+    <p class="data-note">
+      Métricas públicas extraídas do site atual em 03/09/2026. Todos os números
+      precisam de data de referência final antes da publicação.
+    </p>
+  </div>
+
+  <div class="executive-dashboard" aria-label="Dashboard de resultados públicos">
+    <div class="dashboard-grid">
+      {metrics.map((metric) => (
+        <article class="metric-card">
+          <strong
+            data-count-value={metric.value}
+            data-count-prefix={metric.prefix}
+            data-count-suffix={metric.suffix}
+          >
+            {metric.prefix}{metric.value}{metric.suffix}
+          </strong>
+          <span>{metric.label}</span>
+          <p>{metric.note}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="dashboard-chart" aria-hidden="true">
+      <span style="--height: 48%"></span>
+      <span style="--height: 64%"></span>
+      <span style="--height: 58%"></span>
+      <span style="--height: 76%"></span>
+      <span style="--height: 88%"></span>
+      <svg viewBox="0 0 620 180" role="presentation" focusable="false">
+        <path d="M10 142 C92 114 134 128 208 84 C284 38 340 74 408 48 C488 18 540 34 610 22" />
+      </svg>
+    </div>
+  </div>
+</section>

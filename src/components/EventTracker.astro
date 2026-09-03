@@ -1,0 +1,39 @@
+<script>
+  const consentKey = "etraction_cookie_consent";
+
+  function canTrack() {
+    return localStorage.getItem(consentKey) === "accepted";
+  }
+
+  function emit(eventName: string, detail: Record<string, unknown>) {
+    window.dispatchEvent(new CustomEvent(eventName, { detail }));
+    if (!canTrack()) return;
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: eventName, ...detail });
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-track-event]").forEach((element) => {
+    element.addEventListener("click", () => {
+      emit(element.dataset.trackEvent || "cta_click", {
+        label: element.dataset.trackLabel || element.textContent?.trim() || "",
+        path: window.location.pathname
+      });
+    });
+  });
+
+  document.querySelectorAll<HTMLAnchorElement>('a[href^="mailto:"]').forEach((link) => {
+    link.addEventListener("click", () => emit("email_click", { href: link.href }));
+  });
+
+  document.querySelectorAll<HTMLAnchorElement>('a[href^="tel:"]').forEach((link) => {
+    link.addEventListener("click", () => emit("phone_click", { href: link.href }));
+  });
+
+  if (window.location.pathname.startsWith("/servicos/") && window.location.pathname !== "/servicos/") {
+    emit("service_view", { path: window.location.pathname });
+  }
+
+  if (window.location.pathname.startsWith("/cases/") && window.location.pathname !== "/cases/") {
+    emit("case_view", { path: window.location.pathname });
+  }
+</script>

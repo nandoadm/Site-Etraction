@@ -1,0 +1,66 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { site } from "@data/site";
+import { breadcrumbSchema } from "@utils/schema";
+---
+
+<BaseLayout
+  title="Política de privacidade | Etraction"
+  description="Política de privacidade da Etraction para formulários comerciais, banco de talentos, cookies, analytics e canais de contato."
+  structuredData={breadcrumbSchema([{ label: "Política de privacidade", href: "/politica-de-privacidade/" }])}
+>
+  <Breadcrumbs items={[{ label: "Política de privacidade", href: "/politica-de-privacidade/" }]} />
+  <article class="legal-page" data-animate>
+    <h1>Política de privacidade.</h1>
+    <p>
+      Esta versão organiza a base necessária para publicação. A redação final deve
+      ser revisada juridicamente para refletir controladora, operadores, retenção,
+      bases legais, ferramentas e integrações definitivas.
+    </p>
+
+    <h2>Dados coletados.</h2>
+    <p>
+      Formulários comerciais podem coletar nome, empresa, e-mail, WhatsApp, URL da
+      loja, faixa de faturamento, desafio, serviço de interesse, mensagem, origem e
+      parâmetros UTM. O banco de talentos pode coletar currículo, LinkedIn,
+      portfólio, área de interesse e experiência.
+    </p>
+
+    <h2>Finalidade.</h2>
+    <ul>
+      <li>Responder contatos comerciais e qualificar oportunidades.</li>
+      <li>Registrar interesse em serviços da Etraction.</li>
+      <li>Gerenciar candidaturas e banco de talentos.</li>
+      <li>Medir desempenho do site após consentimento para cookies de medição.</li>
+      <li>Cumprir obrigações legais e solicitações de titulares.</li>
+    </ul>
+
+    <h2>Cookies e analytics.</h2>
+    <p>
+      Cookies essenciais mantêm o funcionamento do site. Google Analytics 4 e Google
+      Tag Manager só devem ser ativados com os IDs definitivos e respeitando as
+      escolhas de consentimento do visitante.
+    </p>
+
+    <h2>Compartilhamento.</h2>
+    <p>
+      Dados podem ser tratados por CRM, ferramentas de automação, hospedagem,
+      analytics e comunicação, conforme contratos e controles definidos. A lista
+      final de operadores precisa ser documentada antes da publicação.
+    </p>
+
+    <h2>Direitos do titular.</h2>
+    <p>
+      Solicitações de acesso, correção, exclusão, portabilidade, informação e
+      revogação de consentimento podem ser encaminhadas pelo canal LGPD.
+    </p>
+    <p><a class="button button-secondary" href="/lgpd/">Acessar canal LGPD</a></p>
+
+    <h2>Controladora.</h2>
+    <p>
+      {site.legalName}. CNPJ {site.cnpj}. Endereço: {site.address}. E-mail:
+      {` ${site.email}`}.
+    </p>
+  </article>
+</BaseLayout>

@@ -1,0 +1,77 @@
+---
+import { talentAreas } from "@data/site";
+---
+
+<form id="form-talentos" class="lead-form" data-enhanced-form data-start-event="talent_form_start" data-submit-event="talent_form_submit">
+  <input type="text" name="website" tabindex="-1" autocomplete="off" class="honeypot" aria-hidden="true" />
+  <div class="form-grid">
+    <label>
+      Nome
+      <input name="nome" autocomplete="name" required />
+    </label>
+    <label>
+      E-mail
+      <input name="email" type="email" autocomplete="email" required />
+    </label>
+    <label>
+      Telefone
+      <input name="telefone" type="tel" autocomplete="tel" inputmode="tel" required />
+    </label>
+    <label>
+      Cidade
+      <input name="cidade" autocomplete="address-level2" required />
+    </label>
+    <label>
+      LinkedIn
+      <input name="linkedin" type="url" placeholder="https://linkedin.com/in/seu-perfil" />
+    </label>
+    <label>
+      Portfólio
+      <input name="portfolio" type="url" placeholder="https://seuportfolio.com" />
+    </label>
+    <label>
+      Área de interesse
+      <select name="area_interesse" required>
+        <option value="">Selecione</option>
+        {talentAreas.map((area) => <option>{area}</option>)}
+      </select>
+    </label>
+    <label>
+      Nível de experiência
+      <select name="nivel_experiencia" required>
+        <option value="">Selecione</option>
+        <option>Júnior</option>
+        <option>Pleno</option>
+        <option>Sênior</option>
+        <option>Especialista</option>
+        <option>Estágio</option>
+      </select>
+    </label>
+    <label>
+      Modelo de trabalho
+      <select name="modelo_trabalho" required>
+        <option value="">Selecione</option>
+        <option>Presencial</option>
+        <option>Híbrido</option>
+        <option>Remoto</option>
+        <option>A combinar</option>
+      </select>
+    </label>
+    <label>
+      Currículo
+      <input name="curriculo" type="file" accept=".pdf,.doc,.docx" />
+    </label>
+  </div>
+  <label>
+    Mensagem
+    <textarea name="mensagem" rows="5"></textarea>
+  </label>
+  <label class="checkbox-label">
+    <input type="checkbox" name="consentimento_lgpd" required />
+    <span>
+      Autorizo o armazenamento dos dados para banco de talentos pelo período definido na política de privacidade.
+    </span>
+  </label>
+  <button class="button button-primary" type="submit">Enviar para banco de talentos</button>
+  <p class="form-status" role="status" data-form-status></p>
+</form>

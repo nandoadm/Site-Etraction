@@ -1,0 +1,62 @@
+---
+import { navigation, serviceGroups, services } from "@data/site";
+
+const pathname = Astro.url.pathname;
+const serviceByShortName = new Map(services.map((service) => [service.shortName, service]));
+---
+
+<header class="site-header">
+  <div class="header-shell">
+    <a class="brand-link" href="/" aria-label="Etraction, página inicial">
+      <img src="/assets/brand/etraction-logo.svg" alt="Etraction" width="329" height="33" />
+    </a>
+
+    <nav class="desktop-nav" aria-label="Navegação principal">
+      <details class="solutions-menu">
+        <summary>Soluções</summary>
+        <div class="solutions-panel">
+          {serviceGroups.map((group) => (
+            <section>
+              <h2>{group.objective}</h2>
+              <ul>
+                {group.items.map((item) => {
+                  const service = serviceByShortName.get(item);
+                  return service ? (
+                    <li>
+                      <a href={`/servicos/${service.slug}/`}>
+                        <strong>{service.shortName}</strong>
+                        <span>{service.intent}</span>
+                      </a>
+                    </li>
+                  ) : null;
+                })}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </details>
+
+      {navigation.slice(1).map((item) => (
+        <a href={item.href} aria-current={pathname === item.href ? "page" : undefined}>
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <a class="header-cta" href="/contato/" data-track-event="cta_click" data-track-label="header especialista">Falar com um especialista</a>
+
+    <details class="mobile-nav">
+      <summary aria-label="Abrir menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </summary>
+      <div class="mobile-panel">
+        {navigation.map((item) => (
+          <a href={item.href}>{item.label}</a>
+        ))}
+        <a class="mobile-panel-cta" href="/contato/">Falar com um especialista</a>
+      </div>
+    </details>
+  </div>
+</header>

@@ -1,0 +1,28 @@
+---
+import { services } from "@data/site";
+---
+
+<section class="section services-overview" data-animate>
+  <div class="section-header">
+    <h2>Serviços conectados para crescimento de e-commerce.</h2>
+    <p>
+      Cada área tem função comercial clara, indicadores próprios e pontos de
+      integração com as demais frentes do negócio.
+    </p>
+  </div>
+  <div class="service-list">
+    {services.map((service) => (
+      <article class="service-row">
+        <div>
+          <h3>{service.name}</h3>
+          <p>{service.summary}</p>
+        </div>
+        <div class="service-meta">
+          <span>Indicadores: {service.indicators.slice(0, 3).join(", ")}</span>
+          <span>Especialista: {service.specialist.name}</span>
+          <a href={`/servicos/${service.slug}/`}>Ver serviço completo</a>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>

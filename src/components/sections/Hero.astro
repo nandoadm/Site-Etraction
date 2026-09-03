@@ -1,0 +1,40 @@
+---
+import GrowthScene from "@components/three/GrowthScene";
+import { metrics } from "@data/site";
+---
+
+<section class="hero-section">
+  <div class="hero-copy" data-animate>
+    <h1>Estratégia e performance para seu e-commerce ganhar tração.</h1>
+    <p>
+      A Etraction reúne mídia, CRO, CRM, marketplace, design e relacionamento
+      para transformar oportunidades em crescimento sustentável.
+    </p>
+    <div class="hero-actions">
+      <a class="button button-primary" href="/contato/" data-track-event="cta_click" data-track-label="hero especialista">Falar com um especialista</a>
+      <a class="button button-secondary" href="/cases/" data-track-event="cta_click" data-track-label="hero cases">Conhecer nossos cases</a>
+    </div>
+    <ul class="hero-metric-strip" aria-label="Indicadores públicos da Etraction">
+      {metrics.slice(0, 3).map((metric) => (
+        <li>
+          <strong>{metric.prefix}{metric.value}{metric.suffix}</strong>
+          <span>{metric.label}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <figure class="hero-visual" data-animate>
+    <img
+      class="hero-visual-fallback"
+      src="/assets/brand/growth-dashboard-fallback.svg"
+      alt="Painel visual com métricas de crescimento para e-commerce"
+      width="1200"
+      height="900"
+      loading="eager"
+      decoding="async"
+      fetchpriority="low"
+    />
+    <GrowthScene client:visible />
+  </figure>
+</section>

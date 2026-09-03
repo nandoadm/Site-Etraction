@@ -1,0 +1,35 @@
+---
+import { partners } from "@data/site";
+---
+
+<section class="section partners-section" data-animate>
+  <div class="section-header">
+    <h2>Ecossistemas atendidos com separação clara entre parceria, plataforma e ferramenta.</h2>
+    <p>
+      Selos e condições oficiais precisam ser validados antes da publicação. Onde
+      não houver comprovação formal, a comunicação usa a categoria correta.
+    </p>
+  </div>
+
+  <div class="partner-layout">
+    <section class="partner-block">
+      <h3>Certificações e parcerias a validar</h3>
+      <ul class="partner-logo-grid">
+        {partners.officialToValidate.map((partner) => (
+          <li>
+            <img src={partner.logo} alt={`${partner.name} a validar`} width="150" height="72" loading="lazy" />
+            <span>{partner.name}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="platform-block">
+      <h3>Plataformas com que trabalhamos</h3>
+      <ul>
+        {partners.platforms.map((platform) => <li>{platform}</li>)}
+      </ul>
+      <p>{partners.tools}</p>
+    </section>
+  </div>
+</section>

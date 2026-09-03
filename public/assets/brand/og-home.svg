@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Etraction</title>
+  <desc id="desc">Agência de performance para e-commerce.</desc>
+  <rect width="1200" height="630" fill="#111113"/>
+  <rect x="80" y="80" width="1040" height="470" rx="30" fill="#ffffff"/>
+  <circle cx="1012" cy="150" r="54" fill="#e42921"/>
+  <text x="120" y="178" font-family="Arial, sans-serif" font-size="44" font-weight="700" fill="#e42921">e</text>
+  <text x="158" y="178" font-family="Arial, sans-serif" font-size="44" font-weight="700" fill="#18181b">TRACTION</text>
+  <text x="120" y="300" font-family="Arial, sans-serif" font-size="58" font-weight="700" fill="#18181b">Estratégia e performance</text>
+  <text x="120" y="370" font-family="Arial, sans-serif" font-size="58" font-weight="700" fill="#18181b">para e-commerce ganhar tração.</text>
+  <rect x="120" y="444" width="254" height="54" rx="10" fill="#e42921"/>
+  <text x="148" y="480" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#ffffff">etraction.com.br</text>
+  <path d="M750 468 C810 416, 872 436, 932 370 S1034 310, 1080 326" fill="none" stroke="#e42921" stroke-width="10" stroke-linecap="round"/>
+</svg>

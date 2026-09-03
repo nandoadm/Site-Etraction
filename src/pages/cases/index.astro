@@ -1,0 +1,45 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { caseStudies } from "@data/site";
+import { breadcrumbSchema } from "@utils/schema";
+---
+
+<BaseLayout
+  title="Resultados construídos com nossos clientes | Etraction"
+  description="Estrutura de cases da Etraction com desafio, contexto, estratégia, serviços envolvidos, período, resultados e fonte dos dados."
+  structuredData={breadcrumbSchema([{ label: "Cases", href: "/cases/" }])}
+>
+  <Breadcrumbs items={[{ label: "Cases", href: "/cases/" }]} />
+  <section class="page-hero" data-animate>
+    <h1>Resultados construídos com nossos clientes.</h1>
+    <p>
+      Esta área foi preparada para publicar somente cases reais, autorizados e com
+      fonte de dados definida. Enquanto a curadoria não termina, os itens ficam
+      marcados como estrutura editorial.
+    </p>
+  </section>
+
+  <section class="case-grid" aria-label="Cases da Etraction">
+    {caseStudies.map((caseStudy) => (
+      <article class="case-card" data-animate>
+        <h2>{caseStudy.client}</h2>
+        <dl>
+          <div>
+            <dt>Segmento</dt>
+            <dd>{caseStudy.segment}</dd>
+          </div>
+          <div>
+            <dt>Desafio</dt>
+            <dd>{caseStudy.challenge}</dd>
+          </div>
+          <div>
+            <dt>Resultado</dt>
+            <dd>{caseStudy.percentageResult}</dd>
+          </div>
+        </dl>
+        <a href={`/cases/${caseStudy.slug}/`}>Abrir estrutura do case</a>
+      </article>
+    ))}
+  </section>
+</BaseLayout>

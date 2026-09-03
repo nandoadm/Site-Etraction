@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="900" viewBox="0 0 720 900" role="img" aria-labelledby="title desc">
+  <title id="title">Foto do especialista a confirmar</title>
+  <desc id="desc">Placeholder de desenvolvimento para foto real de especialista da Etraction.</desc>
+  <rect width="720" height="900" fill="#f4f4f5"/>
+  <rect x="48" y="48" width="624" height="804" rx="24" fill="#ffffff" stroke="#d4d4d8" stroke-width="2"/>
+  <circle cx="360" cy="338" r="112" fill="#e4e4e7"/>
+  <path d="M188 692c24-112 97-172 172-172s148 60 172 172" fill="#e4e4e7"/>
+  <rect x="178" y="736" width="364" height="34" rx="6" fill="#27272a"/>
+  <rect x="242" y="786" width="236" height="24" rx="6" fill="#e42921"/>
+  <text x="360" y="755" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">FOTO A CONFIRMAR</text>
+  <text x="360" y="804" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#ffffff">ambiente de desenvolvimento</text>
+</svg>
