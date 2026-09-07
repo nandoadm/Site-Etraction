@@ -7,25 +7,19 @@
     "dev": "astro dev",
     "build": "astro check && astro build",
     "visual:check": "node scripts/visual-check.mjs",
+    "photos": "node scripts/prepare-photos.mjs",
     "preview": "astro preview",
     "check": "astro check"
   },
   "dependencies": {
-    "@astrojs/react": "6.0.4",
     "@astrojs/sitemap": "3.7.4",
-    "@react-three/drei": "10.7.8",
-    "@react-three/fiber": "9.7.0",
     "astro": "7.2.10",
+    "embla-carousel": "^8.6.0",
     "gsap": "3.15.0",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "three": "0.185.1"
+    "lucide-static": "^1.41.0"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
-    "@types/react": "19.2.2",
-    "@types/react-dom": "19.2.2",
-    "@types/three": "0.185.0",
     "playwright-core": "1.62.1",
     "sharp": "0.35.4",
     "typescript": "5.9.2"

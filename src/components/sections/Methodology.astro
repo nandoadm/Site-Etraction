@@ -1,13 +1,19 @@
 ---
+import Icon from "@components/Icon.astro";
 import { methodology } from "@data/site";
 ---
 
 <section class="section methodology-section" data-animate>
   <div class="section-header">
-    <h2>Uma jornada contínua de diagnóstico, execução e escala.</h2>
+    <div>
+      <p class="section-label">
+        <Icon name="route" size={15} />
+        Como trabalhamos
+      </p>
+      <h2>Uma jornada contínua de diagnóstico, execução e escala.</h2>
+    </div>
     <p>
-      A metodologia evita separar mídia, conversão, relacionamento, operação e
-      criatividade quando o cliente precisa decidir com velocidade.
+      Mídia, conversão, relacionamento e criatividade na mesma cadência.
     </p>
   </div>
   <ol class="methodology-timeline">

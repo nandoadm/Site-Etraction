@@ -1,45 +1,54 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import Hero from "@components/sections/Hero.astro";
-import ProofSocial from "@components/sections/ProofSocial.astro";
 import MetricsDashboard from "@components/sections/MetricsDashboard.astro";
+import ClientsLogoExperience from "@components/sections/ClientsLogoExperience.astro";
 import Problems from "@components/sections/Problems.astro";
-import ServicesOverview from "@components/sections/ServicesOverview.astro";
+import ServicesShowcase from "@components/sections/ServicesShowcase.astro";
 import Methodology from "@components/sections/Methodology.astro";
 import Partners from "@components/sections/Partners.astro";
 import Testimonials from "@components/sections/Testimonials.astro";
+import GrowthCulture from "@components/sections/GrowthCulture.astro";
 import CommercialForm from "@components/forms/CommercialForm.astro";
 ---
 
 <BaseLayout
   title="Agência de Performance para E-commerce | Etraction"
-  description="Escale seu e-commerce com estratégias integradas de CRO, Meta Ads, Google Ads, CRM, e-mail marketing, marketplace e design."
+  description="Agência de performance para e-commerce: mídia, CRO, CRM, e-mail, social, marketplace e design, com um especialista responsável por cada frente."
 >
   <Hero />
-  <ProofSocial />
+  <ClientsLogoExperience />
   <MetricsDashboard />
+  <ServicesShowcase />
   <Problems />
-  <ServicesOverview />
   <Methodology />
   <Partners />
   <Testimonials />
+  <GrowthCulture variant="compact" />
+
   <section class="cta-band" data-animate>
-    <h2>Leve um desafio real da sua loja para a primeira conversa.</h2>
+    <h2>Traga um desafio real do seu e-commerce para a primeira conversa.</h2>
     <p>
-      O formulário inicial coleta contexto suficiente para direcionar o atendimento
-      comercial e preservar a conversa com o especialista certo.
+      Você sai da conversa sabendo qual é o próximo movimento da sua loja.
     </p>
     <div class="hero-actions">
-      <a class="button button-on-dark" href="/contato/" data-track-event="cta_click" data-track-label="cta band especialista">Falar com um especialista</a>
-      <a class="button button-secondary" href="/servicos/" data-track-event="cta_click" data-track-label="cta band serviços">Ver todos os serviços</a>
+      <a class="button button-on-dark" href="/contato/" data-track-event="cta_click" data-track-label="cta band vendas">
+        Falar com o time de vendas
+      </a>
+      <a class="button button-secondary" href="/servicos/" data-track-event="cta_click" data-track-label="cta band serviços">
+        Ver todos os serviços
+      </a>
     </div>
   </section>
+
   <section class="section" data-animate>
     <div class="section-header">
-      <h2>Primeiro contato objetivo, com origem e UTM preparados para o CRM.</h2>
+      <div>
+        <h2>Conte o que precisa crescer, corrigir ou organizar.</h2>
+      </div>
       <p>
-        O envio final depende da definição do CRM e do endpoint seguro. Enquanto
-        isso, a validação de campos e os eventos de conversão já estão previstos.
+        Sua mensagem chega direto no time de vendas, que volta com o
+        diagnóstico e o próximo passo.
       </p>
     </div>
     <CommercialForm />

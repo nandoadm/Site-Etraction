@@ -1,40 +1,174 @@
 ---
-import GrowthScene from "@components/three/GrowthScene";
-import { metrics } from "@data/site";
+import Icon from "@components/Icon.astro";
+import { ctas, homeBenefits, metrics, operationalLeaders, partners } from "@data/site";
+
+const heroTitle = "Seu e-commerce vendendo mais, com um time que cuida como se fosse da casa.";
+const titleLines = ["Seu e-commerce vendendo mais,", "com um time que cuida", "como se fosse da casa."];
+const salesCta = ctas.sales;
+
+const [clientsMetric, teamMetric, investedMetric, salesMetric] = metrics;
+
+const heroTeam = [
+  "gustavo-cro",
+  "fernando-metaads",
+  "alana-crm",
+  "tauane-emailmarketing",
+  "juliana-sucessocliente"
+].map((key) => operationalLeaders[key]);
+
+const heroBadges = partners.officialToValidate.slice(0, 2);
+
+// Curva ilustrativa do painel: mostra formato de crescimento, não números de cliente.
+const trendPoints = [12, 26, 21, 38, 34, 52, 61, 58, 78, 92];
+const chartWidth = 320;
+const chartHeight = 96;
+const maxPoint = Math.max(...trendPoints);
+const toX = (index: number) => (index / (trendPoints.length - 1)) * chartWidth;
+const toY = (value: number) => chartHeight - (value / maxPoint) * (chartHeight - 10) - 4;
+const linePath = trendPoints.map((value, index) => `${index === 0 ? "M" : "L"}${toX(index).toFixed(1)} ${toY(value).toFixed(1)}`).join(" ");
+const areaPath = `${linePath} L${chartWidth} ${chartHeight} L0 ${chartHeight} Z`;
 ---
 
-<section class="hero-section">
-  <div class="hero-copy" data-animate>
-    <h1>Estratégia e performance para seu e-commerce ganhar tração.</h1>
-    <p>
-      A Etraction reúne mídia, CRO, CRM, marketplace, design e relacionamento
-      para transformar oportunidades em crescimento sustentável.
-    </p>
-    <div class="hero-actions">
-      <a class="button button-primary" href="/contato/" data-track-event="cta_click" data-track-label="hero especialista">Falar com um especialista</a>
-      <a class="button button-secondary" href="/cases/" data-track-event="cta_click" data-track-label="hero cases">Conhecer nossos cases</a>
+<section class="home-hero" data-home-hero>
+  <div class="home-hero-shell">
+    <div class="home-hero-copy" data-hero-copy>
+      <p class="hero-kicker" data-hero-item>
+        <Icon name="zap" size={15} />
+        Performance para e-commerce
+      </p>
+
+      <h1 aria-label={heroTitle}>
+        {titleLines.map((line) => (
+          <span data-hero-word>{line}</span>
+        ))}
+      </h1>
+
+      <p class="hero-lead" data-hero-item>
+        Mídia, CRO, CRM e conteúdo operados por especialistas com nome e rosto.
+        Você acompanha o resultado sem precisar decifrar relatório.
+      </p>
+
+      <div class="hero-actions" data-hero-item>
+        <a
+          class="button button-primary hero-cta"
+          href={salesCta.href}
+          target={salesCta.external ? "_blank" : undefined}
+          rel={salesCta.external ? "noreferrer" : undefined}
+          data-track-event="cta_click"
+          data-track-label="hero vendas"
+        >
+          {salesCta.label}
+          <Icon name="arrow-right" size={18} class="button-arrow" />
+        </a>
+        <a
+          class="button button-secondary"
+          href="#servicos"
+          data-scroll-link
+          data-track-event="cta_click"
+          data-track-label="hero serviços"
+        >
+          Conheça os serviços
+        </a>
+      </div>
+
+      <ul class="home-benefit-list" aria-label="Diferenciais da Etraction" data-hero-item>
+        {homeBenefits.map((benefit) => (
+          <li>
+            <Icon name="check" size={15} />
+            <span>{benefit}</span>
+          </li>
+        ))}
+      </ul>
+
+      <div class="hero-trust" data-hero-item>
+        <ul class="hero-trust-badges" aria-label="Parcerias oficiais">
+          {heroBadges.map((badge) => (
+            <li>
+              <img src={badge.logo} alt={badge.name} width="56" height="56" loading="eager" decoding="async" />
+              <span>{badge.name}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="hero-trust-note">
+          <strong>{clientsMetric.prefix}{clientsMetric.value}</strong> e-commerces atendidos desde 2019
+        </p>
+      </div>
     </div>
-    <ul class="hero-metric-strip" aria-label="Indicadores públicos da Etraction">
-      {metrics.slice(0, 3).map((metric) => (
-        <li>
-          <strong>{metric.prefix}{metric.value}{metric.suffix}</strong>
-          <span>{metric.label}</span>
-        </li>
-      ))}
-    </ul>
+
+    <div class="home-hero-visual" data-hero-visual data-tilt-card>
+      <figure class="hero-panel" aria-label="Painel ilustrativo de acompanhamento de resultados">
+        <figcaption class="hero-panel-head">
+          <span class="hero-panel-title">
+            <Icon name="activity" size={16} />
+            Painel da operação
+          </span>
+          <span class="hero-panel-live"><i aria-hidden="true"></i>acompanhamento contínuo</span>
+        </figcaption>
+
+        <div class="hero-panel-headline">
+          <span>Vendas geradas para clientes</span>
+          <strong>{salesMetric.prefix}{salesMetric.value}{salesMetric.suffix}</strong>
+          <em>
+            <Icon name="trending-up" size={14} />
+            a partir de {investedMetric.prefix}{investedMetric.value}{investedMetric.suffix} em mídia
+          </em>
+        </div>
+
+        <div class="hero-panel-chart" aria-hidden="true">
+          <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} preserveAspectRatio="none" focusable="false">
+            <defs>
+              <linearGradient id="heroChartFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--color-red)" stop-opacity="0.34" />
+                <stop offset="100%" stop-color="var(--color-red)" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <path class="hero-chart-area" d={areaPath} fill="url(#heroChartFill)" />
+            <path class="hero-chart-line" d={linePath} />
+          </svg>
+        </div>
+
+        <dl class="hero-panel-stats">
+          <div>
+            <dt>Clientes ativos</dt>
+            <dd>{clientsMetric.prefix}{clientsMetric.value}</dd>
+          </div>
+          <div>
+            <dt>No time</dt>
+            <dd>{teamMetric.prefix}{teamMetric.value}</dd>
+          </div>
+          <div>
+            <dt>Frentes</dt>
+            <dd>8</dd>
+          </div>
+        </dl>
+      </figure>
+
+      <aside class="hero-team-card" data-depth="14">
+        <ul class="hero-team-avatars" aria-hidden="true">
+          {heroTeam.map((leader) => (
+            <li>
+              <img src={leader.avatarSmall} alt="" width="36" height="36" loading="eager" decoding="async" />
+            </li>
+          ))}
+        </ul>
+        <div>
+          <strong>Gente, não robô</strong>
+          <span>Um especialista responsável por cada frente da sua conta.</span>
+        </div>
+      </aside>
+
+      <aside class="hero-flag-card" data-depth="18">
+        <Icon name="shield-check" size={18} />
+        <div>
+          <strong>Google Premier &amp; Meta Partner</strong>
+          <span>Certificações oficiais das plataformas</span>
+        </div>
+      </aside>
+    </div>
   </div>
 
-  <figure class="hero-visual" data-animate>
-    <img
-      class="hero-visual-fallback"
-      src="/assets/brand/growth-dashboard-fallback.svg"
-      alt="Painel visual com métricas de crescimento para e-commerce"
-      width="1200"
-      height="900"
-      loading="eager"
-      decoding="async"
-      fetchpriority="low"
-    />
-    <GrowthScene client:visible />
-  </figure>
+  <a class="hero-scroll-indicator" href="#servicos" data-scroll-link aria-label="Ir para a seção de serviços">
+    <span>Nossos serviços</span>
+    <i aria-hidden="true"></i>
+  </a>
 </section>

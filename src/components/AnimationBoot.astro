@@ -1,63 +1,718 @@
 <script>
+  import EmblaCarousel, { type EmblaCarouselType, type EmblaOptionsType } from "embla-carousel";
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  type CleanupTask = () => void;
 
-  if (!prefersReducedMotion) {
-    gsap.registerPlugin(ScrollTrigger);
+  const cleanupTasks: CleanupTask[] = [];
+  const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const desktopQuery = window.matchMedia("(min-width: 981px)");
+  const pointerFineQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+  const countFormatter = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 0 });
 
-    gsap.utils.toArray<HTMLElement>("[data-animate]").forEach((element) => {
-      gsap.from(element, {
+  gsap.registerPlugin(ScrollTrigger);
+
+  /**
+   * Prioridade de recálculo dos blocos fixados, em ordem de documento.
+   * Maior valor é recalculado primeiro.
+   */
+  const PIN_PRIORITY = { clients: 2, services: 1 };
+
+  function headerOffset() {
+    const header = document.querySelector<HTMLElement>(".site-header");
+    return header ? header.getBoundingClientRect().height + 16 : 96;
+  }
+
+
+  /**
+   * Rolagem para avançar um serviço no bloco fixado. Mantida curta de
+   * propósito: com dez serviços, um passo longo faz a página parecer travada.
+   */
+  function stepDistance() {
+    return Math.max(120, Math.min(window.innerHeight * 0.18, 155));
+  }
+
+  function prefersReducedMotion() {
+    return reducedMotionQuery.matches;
+  }
+
+  function addCleanup(task: CleanupTask) {
+    cleanupTasks.push(task);
+  }
+
+  function cleanup() {
+    while (cleanupTasks.length) {
+      const task = cleanupTasks.pop();
+      if (task) task();
+    }
+  }
+
+  function formatCounter(value: number, prefix: string, suffix: string, decimals: number) {
+    const formatter = decimals
+      ? new Intl.NumberFormat("pt-BR", {
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: decimals
+        })
+      : countFormatter;
+
+    return `${prefix}${formatter.format(value)}${suffix}`;
+  }
+
+  function initScrollLinks(reduced: boolean) {
+    document.querySelectorAll<HTMLAnchorElement>("[data-scroll-link]").forEach((link) => {
+      const handleClick = (event: MouseEvent) => {
+        const hash = link.hash;
+        if (!hash) return;
+
+        const target = document.querySelector<HTMLElement>(hash);
+        if (!target) return;
+
+        event.preventDefault();
+        target.scrollIntoView({
+          behavior: reduced ? "auto" : "smooth",
+          block: "start"
+        });
+      };
+
+      link.addEventListener("click", handleClick);
+      addCleanup(() => link.removeEventListener("click", handleClick));
+    });
+  }
+
+  function initBasicReveals(reduced: boolean) {
+    if (reduced) return;
+
+    const context = gsap.context(() => {
+      gsap.utils.toArray<HTMLElement>("[data-animate]").forEach((element) => {
+        gsap.from(element, {
+          autoAlpha: 0,
+          y: 24,
+          duration: 0.58,
+          ease: "power2.out",
+          clearProps: "opacity,visibility,transform",
+          scrollTrigger: {
+            trigger: element,
+            start: "top 86%",
+            once: true
+          }
+        });
+      });
+
+      gsap.utils.toArray<HTMLElement>("[data-method-step]").forEach((element, index) => {
+        gsap.from(element, {
+          autoAlpha: 0,
+          x: index % 2 === 0 ? -18 : 18,
+          duration: 0.5,
+          ease: "power2.out",
+          clearProps: "opacity,visibility,transform",
+          scrollTrigger: {
+            trigger: element,
+            start: "top 88%",
+            once: true
+          }
+        });
+      });
+    });
+
+    addCleanup(() => context.revert());
+  }
+
+  function initHero(reduced: boolean) {
+    const root = document.querySelector<HTMLElement>("[data-home-hero]");
+    if (!root) return;
+
+    if (!reduced) {
+      const context = gsap.context(() => {
+        const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+        timeline
+          .from(root.querySelectorAll("[data-hero-word]"), {
+            autoAlpha: 0,
+            y: 34,
+            duration: 0.72,
+            stagger: 0.08,
+            clearProps: "opacity,visibility,transform"
+          })
+          .from(root.querySelectorAll("[data-hero-item]"), {
+            autoAlpha: 0,
+            y: 20,
+            duration: 0.55,
+            stagger: 0.08,
+            clearProps: "opacity,visibility,transform"
+          }, "-=0.34")
+          .from(root.querySelector("[data-hero-visual]"), {
+            autoAlpha: 0,
+            y: 24,
+            scale: 0.98,
+            duration: 0.7,
+            clearProps: "opacity,visibility,transform"
+          }, "-=0.5");
+
+        gsap.to(root.querySelector("[data-hero-visual]"), {
+          y: 34,
+          scale: 0.985,
+          ease: "none",
+          scrollTrigger: {
+            trigger: root,
+            start: "top top",
+            end: "bottom top",
+            scrub: true
+          }
+        });
+      }, root);
+
+      addCleanup(() => context.revert());
+    }
+
+    if (reduced || !pointerFineQuery.matches) return;
+
+    const visual = root.querySelector<HTMLElement>("[data-tilt-card]");
+    if (!visual) return;
+
+    let frame = 0;
+    let latestEvent: PointerEvent | null = null;
+    const cards = Array.from(visual.querySelectorAll<HTMLElement>("[data-depth]"));
+
+    const updateTilt = () => {
+      frame = 0;
+      if (!latestEvent) return;
+
+      const rect = visual.getBoundingClientRect();
+      const x = (latestEvent.clientX - rect.left) / rect.width - 0.5;
+      const y = (latestEvent.clientY - rect.top) / rect.height - 0.5;
+
+      visual.style.setProperty("--tilt-x", `${(-y * 3).toFixed(2)}deg`);
+      visual.style.setProperty("--tilt-y", `${(x * 3).toFixed(2)}deg`);
+
+      cards.forEach((card) => {
+        const depth = Number(card.dataset.depth || "8");
+        card.style.setProperty("--cursor-x", `${(x * depth).toFixed(2)}px`);
+        card.style.setProperty("--cursor-y", `${(y * depth).toFixed(2)}px`);
+      });
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      latestEvent = event;
+      if (!frame) frame = window.requestAnimationFrame(updateTilt);
+    };
+
+    const handlePointerLeave = () => {
+      latestEvent = null;
+      visual.style.removeProperty("--tilt-x");
+      visual.style.removeProperty("--tilt-y");
+      cards.forEach((card) => {
+        card.style.removeProperty("--cursor-x");
+        card.style.removeProperty("--cursor-y");
+      });
+    };
+
+    visual.addEventListener("pointermove", handlePointerMove);
+    visual.addEventListener("pointerleave", handlePointerLeave);
+    addCleanup(() => {
+      if (frame) window.cancelAnimationFrame(frame);
+      visual.removeEventListener("pointermove", handlePointerMove);
+      visual.removeEventListener("pointerleave", handlePointerLeave);
+      handlePointerLeave();
+    });
+  }
+
+  function initMetrics(reduced: boolean) {
+    const root = document.querySelector<HTMLElement>("[data-metrics-dashboard]");
+    if (!root) return;
+
+    const counters = Array.from(root.querySelectorAll<HTMLElement>("[data-count-value]"));
+    counters.forEach((counter) => {
+      const target = Number(counter.dataset.countValue || "0");
+      const prefix = counter.dataset.countPrefix || "";
+      const suffix = counter.dataset.countSuffix || "";
+      const decimals = Number(counter.dataset.countDecimals || "0");
+      counter.textContent = formatCounter(target, prefix, suffix, decimals);
+    });
+
+    if (reduced) return;
+
+    const context = gsap.context(() => {
+      gsap.from(root.querySelectorAll("[data-metric-card]"), {
+        autoAlpha: 0,
         y: 22,
+        scale: 0.98,
         duration: 0.55,
+        stagger: 0.08,
         ease: "power2.out",
-        clearProps: "transform",
+        clearProps: "opacity,visibility,transform",
         scrollTrigger: {
-          trigger: element,
-          start: "top 84%",
+          trigger: root,
+          start: "top 76%",
           once: true
         }
       });
-    });
 
-    gsap.utils.toArray<HTMLElement>("[data-count-value]").forEach((element) => {
-      const target = Number(element.dataset.countValue || "0");
-      const prefix = element.dataset.countPrefix || "";
-      const suffix = element.dataset.countSuffix || "";
-      const decimals = Number(element.dataset.countDecimals || "0");
-      const state = { value: 0 };
-
-      gsap.to(state, {
-        value: target,
-        duration: 0.9,
+      gsap.from(root.querySelectorAll("[data-dashboard-charts] .dashboard-panel"), {
+        autoAlpha: 0,
+        y: 24,
+        duration: 0.55,
+        stagger: 0.1,
         ease: "power2.out",
+        clearProps: "opacity,visibility,transform",
         scrollTrigger: {
-          trigger: element,
-          start: "top 86%",
+          trigger: root,
+          start: "top 68%",
           once: true
-        },
-        onUpdate: () => {
-          element.textContent = `${prefix}${state.value.toFixed(decimals)}${suffix}`;
-        },
-        onComplete: () => {
-          element.textContent = `${prefix}${target.toFixed(decimals)}${suffix}`;
         }
       });
+
+      counters.forEach((counter) => {
+        const target = Number(counter.dataset.countValue || "0");
+        const prefix = counter.dataset.countPrefix || "";
+        const suffix = counter.dataset.countSuffix || "";
+        const decimals = Number(counter.dataset.countDecimals || "0");
+        const state = { value: 0 };
+
+        gsap.to(state, {
+          value: target,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: counter,
+            start: "top 88%",
+            once: true
+          },
+          onUpdate: () => {
+            counter.textContent = formatCounter(state.value, prefix, suffix, decimals);
+          },
+          onComplete: () => {
+            counter.textContent = formatCounter(target, prefix, suffix, decimals);
+          }
+        });
+      });
+    }, root);
+
+    addCleanup(() => context.revert());
+  }
+
+  function initServicesShowcase(reduced: boolean) {
+    const root = document.querySelector<HTMLElement>("[data-services-showcase]");
+    if (!root) return;
+
+    const navItems = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-service-nav]"));
+    const visualPanels = Array.from(root.querySelectorAll<HTMLElement>("[data-service-visual]"));
+    const copyPanels = Array.from(root.querySelectorAll<HTMLElement>("[data-service-copy]"));
+    const progress = root.querySelector<HTMLElement>("[data-service-progress]");
+    const pinTarget = root.querySelector<HTMLElement>("[data-services-pin]");
+    const total = navItems.length;
+    let scrollTrigger: ReturnType<typeof ScrollTrigger.create> | null = null;
+
+    const setActive = (nextIndex: number) => {
+      const index = Math.max(0, Math.min(total - 1, nextIndex));
+      const progressScale = total > 1 ? (index + 1) / total : 1;
+
+      navItems.forEach((item, itemIndex) => {
+        if (itemIndex === index) {
+          item.setAttribute("aria-current", "true");
+        } else {
+          item.removeAttribute("aria-current");
+        }
+      });
+
+      visualPanels.forEach((panel, panelIndex) => {
+        const active = panelIndex === index;
+        panel.classList.toggle("is-active", active);
+        panel.setAttribute("aria-hidden", active ? "false" : "true");
+      });
+
+      copyPanels.forEach((panel, panelIndex) => {
+        const active = panelIndex === index;
+        panel.classList.toggle("is-active", active);
+        panel.setAttribute("aria-hidden", active ? "false" : "true");
+      });
+
+      if (progress) progress.style.transform = `scaleY(${progressScale})`;
+    };
+
+    const handleNavClick = (event: MouseEvent) => {
+      const button = event.currentTarget as HTMLButtonElement;
+      const index = Number(button.dataset.serviceIndex || "0");
+
+      if (!scrollTrigger) {
+        setActive(index);
+        return;
+      }
+
+      // Cada serviço ocupa uma fatia igual do trecho fixado; o clique leva
+      // exatamente ao centro da fatia para não cair na fronteira entre duas.
+      // O salto é instantâneo de propósito: com o painel fixado nada mais se
+      // move na tela, então rolagem suave só atrasaria a troca do conteúdo.
+      const distance = scrollTrigger.end - scrollTrigger.start;
+      const step = total > 1 ? distance / total : distance;
+      window.scrollTo({ top: Math.round(scrollTrigger.start + step * index + step / 2) });
+      setActive(index);
+    };
+
+    navItems.forEach((item) => item.addEventListener("click", handleNavClick));
+    addCleanup(() => navItems.forEach((item) => item.removeEventListener("click", handleNavClick)));
+
+    setActive(0);
+
+    if (reduced || !desktopQuery.matches || !pinTarget) return;
+
+    root.classList.add("is-enhanced");
+
+    const context = gsap.context(() => {
+      scrollTrigger = ScrollTrigger.create({
+        refreshPriority: PIN_PRIORITY.services,
+        trigger: pinTarget,
+        // O painel é fixado a partir do momento em que fica centralizado na
+        // tela, logo abaixo do cabeçalho fixo.
+        start: () => `top top+=${headerOffset()}`,
+        end: () => `+=${Math.round(stepDistance() * total)}`,
+        pin: pinTarget,
+        pinSpacing: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        snap: {
+          snapTo: (value) => {
+            const slice = 1 / total;
+            return Math.min(1, (Math.floor(value / slice) + 0.5) * slice);
+          },
+          duration: { min: 0.12, max: 0.3 },
+          delay: 0.04,
+          ease: "power1.inOut"
+        },
+        onUpdate: (self) => {
+          const index = Math.min(total - 1, Math.floor(self.progress * total));
+          setActive(index);
+        }
+      });
+    }, root);
+
+    addCleanup(() => {
+      root.classList.remove("is-enhanced");
+      scrollTrigger = null;
+      context.revert();
+    });
+  }
+
+  function initClientsLogos(reduced: boolean) {
+    const root = document.querySelector<HTMLElement>("[data-clients-logos]");
+    if (!root) return;
+
+    const stage = root.querySelector<HTMLElement>("[data-logo-stage]");
+    const logos = Array.from(root.querySelectorAll<HTMLElement>("[data-logo-node]")).sort(
+      (a, b) => Number(a.dataset.logoStep || "0") - Number(b.dataset.logoStep || "0")
+    );
+
+    logos.forEach((logo) => {
+      logo.style.removeProperty("--entry-x");
+      logo.style.removeProperty("--entry-y");
+      logo.style.removeProperty("--entry-scale");
+      logo.style.removeProperty("--entry-blur");
+      logo.style.opacity = "";
+      logo.style.visibility = "";
     });
 
-    gsap.utils.toArray<HTMLElement>("[data-method-step]").forEach((element, index) => {
-      gsap.from(element, {
-        x: index % 2 === 0 ? -18 : 18,
-        duration: 0.5,
-        ease: "power2.out",
-        clearProps: "transform",
+    if (reduced || !stage) return;
+
+    const context = gsap.context(() => {
+      if (!desktopQuery.matches) {
+        root.classList.add("is-mobile-enhanced");
+        gsap.from(logos, {
+          autoAlpha: 0,
+          y: 14,
+          duration: 0.42,
+          stagger: 0.05,
+          ease: "power2.out",
+          clearProps: "opacity,visibility,transform",
+          scrollTrigger: { trigger: root, start: "top 82%", once: true }
+        });
+        return;
+      }
+
+      root.classList.add("is-enhanced");
+      gsap.set(logos, { autoAlpha: 0, "--entry-blur": "8px", "--entry-scale": 0.86 });
+      gsap.set(logos[0], { autoAlpha: 1, "--entry-blur": "0px", "--entry-scale": 1 });
+
+      const timeline = gsap.timeline({
         scrollTrigger: {
-          trigger: element,
-          start: "top 88%",
-          once: true
+          refreshPriority: PIN_PRIORITY.clients,
+          trigger: stage,
+          start: () => `top top+=${headerOffset()}`,
+          end: () => `+=${Math.round(Math.min(window.innerHeight * 0.7, 560))}`,
+          pin: stage,
+          pinSpacing: true,
+          scrub: 0.45,
+          anticipatePin: 1,
+          invalidateOnRefresh: true
         }
+      });
+
+      logos.slice(1).forEach((logo, index) => {
+        const direction = index % 4;
+        const distance = 34 + (index % 3) * 12;
+        const entryX = direction === 0 ? -distance : direction === 1 ? distance : index % 2 ? 18 : -18;
+        const entryY = direction === 2 ? -distance : direction === 3 ? distance : index % 2 ? 24 : -24;
+
+        timeline.fromTo(
+          logo,
+          {
+            autoAlpha: 0,
+            "--entry-blur": "8px",
+            "--entry-x": `${entryX}px`,
+            "--entry-y": `${entryY}px`,
+            "--entry-scale": 0.84
+          },
+          {
+            autoAlpha: 1,
+            "--entry-blur": "0px",
+            "--entry-x": "0px",
+            "--entry-y": "0px",
+            "--entry-scale": 1,
+            duration: 0.24,
+            ease: "power2.out"
+          },
+          index / Math.max(logos.length - 1, 1)
+        );
+      });
+
+      // Sobra no fim da timeline: o scrub mapeia a duração total no trecho
+      // fixado, então esta pausa garante um momento com o mural inteiro à
+      // vista antes de o bloco soltar.
+      timeline.to({}, { duration: 0.55 });
+    }, root);
+
+    addCleanup(() => {
+      root.classList.remove("is-enhanced", "is-mobile-enhanced");
+      context.revert();
+    });
+  }
+
+  function initEmblaCarousels() {
+    document.querySelectorAll<HTMLElement>("[data-embla-carousel]").forEach((carousel) => {
+      const type = carousel.dataset.emblaCarousel;
+      // No desktop os serviços usam o painel fixado, não o carrossel.
+      if (type === "services" && desktopQuery.matches) return;
+
+      const viewport = carousel.querySelector<HTMLElement>("[data-embla-viewport]");
+      if (!viewport) return;
+
+      // O time mostra vários retratos por tela: alinhar no início e paginar
+      // por bloco evita meio card cortado na borda esquerda.
+      const options: EmblaOptionsType =
+        type === "team"
+          ? {
+              align: "start",
+              containScroll: "trimSnaps",
+              slidesToScroll: "auto",
+              loop: false,
+              duration: 26
+            }
+          : {
+              align: "center",
+              containScroll: false,
+              loop: false,
+              skipSnaps: false,
+              duration: 26
+            };
+
+      const embla: EmblaCarouselType = EmblaCarousel(viewport, options);
+
+      const scope = carousel.closest("section") ?? carousel;
+      const prevButton = scope.querySelector<HTMLButtonElement>("[data-embla-prev]");
+      const nextButton = scope.querySelector<HTMLButtonElement>("[data-embla-next]");
+      const dots = Array.from(scope.querySelectorAll<HTMLButtonElement>("[data-embla-dot]"));
+      const counter = scope.querySelector<HTMLElement>("[data-embla-counter] strong");
+      const slides = Array.from(carousel.querySelectorAll<HTMLElement>(".embla-slide"));
+
+      const updateControls = () => {
+        const selected = embla.selectedScrollSnap();
+        const snapCount = embla.scrollSnapList().length;
+        prevButton?.toggleAttribute("disabled", !embla.canScrollPrev());
+        nextButton?.toggleAttribute("disabled", !embla.canScrollNext());
+
+        dots.forEach((dot, index) => {
+          // Com vários slides por tela há menos paradas que cards: os pontos
+          // excedentes saem da navegação em vez de apontar para o nada.
+          const unused = index >= snapCount;
+          dot.hidden = unused;
+          dot.disabled = unused;
+          if (unused) return;
+          if (index === selected) {
+            dot.setAttribute("aria-current", "true");
+            dot.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+          } else {
+            dot.removeAttribute("aria-current");
+          }
+        });
+
+        if (counter) counter.textContent = String(selected + 1).padStart(2, "0");
+
+        slides.forEach((slide, index) => {
+          slide.classList.toggle("is-selected", index === selected);
+        });
+      };
+
+      const handlePrev = () => embla.scrollPrev();
+      const handleNext = () => embla.scrollNext();
+      const handleKeydown = (event: KeyboardEvent) => {
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          embla.scrollPrev();
+        }
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          embla.scrollNext();
+        }
+      };
+
+      prevButton?.addEventListener("click", handlePrev);
+      nextButton?.addEventListener("click", handleNext);
+      carousel.addEventListener("keydown", handleKeydown);
+      dots.forEach((dot) => {
+        const handleClick = () => embla.scrollTo(Number(dot.dataset.emblaIndex || "0"));
+        dot.addEventListener("click", handleClick);
+        addCleanup(() => dot.removeEventListener("click", handleClick));
+      });
+
+      // O viewport de um flex container assume a altura do slide mais alto, o
+      // que deixaria um vazio embaixo dos cards curtos. A altura passa a
+      // acompanhar o slide ativo.
+      const syncHeight = () => {
+        if (type === "team") return;
+        const active = slides[embla.selectedScrollSnap()];
+        if (!active) return;
+        viewport.style.height = `${active.offsetHeight}px`;
+      };
+
+      const update = () => {
+        updateControls();
+        syncHeight();
+      };
+
+      embla.on("select", update);
+      embla.on("reInit", update);
+      update();
+
+      const heightObserver =
+        "ResizeObserver" in window ? new ResizeObserver(() => syncHeight()) : null;
+      slides.forEach((slide) => heightObserver?.observe(slide));
+      addCleanup(() => {
+        heightObserver?.disconnect();
+        viewport.style.removeProperty("height");
+      });
+
+      addCleanup(() => {
+        prevButton?.removeEventListener("click", handlePrev);
+        nextButton?.removeEventListener("click", handleNext);
+        carousel.removeEventListener("keydown", handleKeydown);
+        embla.destroy();
       });
     });
   }
+
+  /** Fecha o menu mobile ao tocar fora, ao navegar e no Esc. */
+  function initMobileNav() {
+    const nav = document.querySelector<HTMLDetailsElement>(".mobile-nav");
+    if (!nav) return;
+
+    const close = () => nav.removeAttribute("open");
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!nav.open) return;
+      const target = event.target as Node;
+      // O scrim é um pseudo-elemento do próprio <details>, então um clique nele
+      // tem o <details> como alvo — só o conteúdo do painel deve manter aberto.
+      const panel = nav.querySelector(".mobile-panel");
+      const summary = nav.querySelector("summary");
+      if (panel?.contains(target) || summary?.contains(target)) return;
+      close();
+    };
+
+    const handleKeydown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") close();
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeydown);
+    nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", close));
+
+    addCleanup(() => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeydown);
+      nav.querySelectorAll("a").forEach((link) => link.removeEventListener("click", close));
+      close();
+    });
+  }
+
+  /** Mantém --header-height em sincronia com a altura real do cabeçalho. */
+  function syncHeaderHeight() {
+    const header = document.querySelector<HTMLElement>(".site-header");
+    if (!header) return;
+    document.documentElement.style.setProperty(
+      "--header-height",
+      `${Math.round(header.getBoundingClientRect().height)}px`
+    );
+  }
+
+  function boot() {
+    cleanup();
+    syncHeaderHeight();
+    initMobileNav();
+    const reduced = prefersReducedMotion();
+    document.documentElement.classList.toggle("reduced-motion", reduced);
+
+    initScrollLinks(reduced);
+    initHero(reduced);
+    initMetrics(reduced);
+    initServicesShowcase(reduced);
+    initClientsLogos(reduced);
+    initEmblaCarousels();
+    initBasicReveals(reduced);
+
+    const refresh = () => {
+      ScrollTrigger.sort();
+      ScrollTrigger.refresh();
+    };
+
+    window.requestAnimationFrame(refresh);
+
+    // O layout ainda muda depois do boot: a fonte com `font-display: swap`
+    // troca as métricas do texto e as imagens lazy entram conforme a rolagem.
+    // Sem recalcular, os blocos fixados usam posições velhas e grudam antes da
+    // hora, flutuando sobre a seção anterior.
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(refresh);
+    }
+
+    if (document.readyState !== "complete") {
+      window.addEventListener("load", refresh, { once: true });
+      addCleanup(() => window.removeEventListener("load", refresh));
+    }
+
+    document.addEventListener("etraction:layout-change", refresh);
+    addCleanup(() => document.removeEventListener("etraction:layout-change", refresh));
+
+    const lateImages = Array.from(document.querySelectorAll<HTMLImageElement>('img[loading="lazy"]'));
+    lateImages.forEach((image) => {
+      if (image.complete) return;
+      image.addEventListener("load", refresh, { once: true });
+      addCleanup(() => image.removeEventListener("load", refresh));
+    });
+  }
+
+  let resizeTimer = 0;
+  const handleResize = () => {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(boot, 180);
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot, { once: true });
+  } else {
+    boot();
+  }
+
+  window.addEventListener("resize", handleResize);
+  reducedMotionQuery.addEventListener("change", boot);
+  document.addEventListener("astro:page-load", boot);
+  document.addEventListener("astro:before-swap", cleanup);
 </script>

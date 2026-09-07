@@ -70,34 +70,3 @@ export function personSchema(person: { name: string; role: string; bio: string; 
     }
   };
 }
-
-export function articleSchema(post: {
-  title: string;
-  description: string;
-  slug: string;
-  author: string;
-  publishedAt: string;
-  updatedAt: string;
-}) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: post.title,
-    description: post.description,
-    url: `${site.url}/blog/${post.slug}/`,
-    author: {
-      "@type": "Person",
-      name: post.author
-    },
-    publisher: {
-      "@type": "Organization",
-      name: site.name,
-      logo: {
-        "@type": "ImageObject",
-        url: `${site.url}/assets/brand/etraction-logo.svg`
-      }
-    },
-    datePublished: post.publishedAt,
-    dateModified: post.updatedAt
-  };
-}

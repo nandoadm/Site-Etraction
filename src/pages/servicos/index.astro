@@ -1,9 +1,9 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
+import Icon from "@components/Icon.astro";
 import ServicesOverview from "@components/sections/ServicesOverview.astro";
 import Methodology from "@components/sections/Methodology.astro";
-import { services } from "@data/site";
 import { breadcrumbSchema } from "@utils/schema";
 ---
 
@@ -14,36 +14,48 @@ import { breadcrumbSchema } from "@utils/schema";
 >
   <Breadcrumbs items={[{ label: "Serviços", href: "/servicos/" }]} />
   <section class="page-hero" data-animate>
+    <p class="section-label">
+      <Icon name="layers" size={15} />
+      Soluções
+    </p>
     <h1>Serviços que conectam tráfego, conversão, relacionamento e operação.</h1>
     <p>
       A Etraction organiza especialistas por frente, mas a leitura de crescimento
-      acontece em conjunto. Cada serviço tem indicadores próprios e impacto no
-      resultado geral da loja.
+      acontece em conjunto. Você contrata o que resolve o seu gargalo — e ganha
+      um time que conversa entre si.
     </p>
   </section>
   <ServicesOverview />
+
   <section class="section" data-animate>
-    <div class="section-header">
-      <h2>O serviço certo depende do gargalo certo.</h2>
-      <p>
-        Quando o diagnóstico mostra que o problema está em oferta, página, base,
-        canal, estoque ou rotina de acompanhamento, a composição do projeto muda.
-      </p>
-    </div>
-    <div class="service-list">
-      {services.map((service) => (
-        <article class="service-row">
-          <div>
-            <h3>{service.intent}</h3>
-            <p>{service.commercialIntro}</p>
-          </div>
-          <div class="service-meta">
-            <span>{service.name}</span>
-            <a href={`/servicos/${service.slug}/`}>Abrir página do serviço</a>
-          </div>
-        </article>
-      ))}
+    <div class="diagnosis-band">
+      <span class="diagnosis-icon" aria-hidden="true">
+        <Icon name="circle-alert" size={22} />
+      </span>
+      <div>
+        <h2>O serviço certo depende do gargalo certo.</h2>
+        <p>
+          Se o problema está na oferta, na página, na base, no canal, no estoque
+          ou na rotina de acompanhamento, a composição do projeto muda. Por isso
+          a conversa começa pelo diagnóstico, nunca pela proposta.
+        </p>
+      </div>
     </div>
   </section>
+
   <Methodology />
+
+  <section class="cta-band" data-animate>
+    <h2>Não sabe por onde começar? A gente ajuda a decidir.</h2>
+    <p>
+      Traga o cenário da loja e a gente aponta a frente com maior impacto no
+      curto prazo — mesmo que a resposta seja "ainda não é hora de contratar".
+    </p>
+    <div class="hero-actions">
+      <a class="button button-on-dark" href="/contato/" data-track-event="cta_click" data-track-label="serviços contato">
+        Falar com o time de vendas
+      </a>
+      <a class="button button-secondary" href="/cases/">Ver resultados</a>
+    </div>
+  </section>
 </BaseLayout>

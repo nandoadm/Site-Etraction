@@ -2,7 +2,7 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import CommercialForm from "@components/forms/CommercialForm.astro";
-import { services, type Service } from "@data/site";
+import { operationalLeaders, services, type Service } from "@data/site";
 import { breadcrumbSchema, faqSchema, serviceSchema } from "@utils/schema";
 
 export function getStaticPaths() {
@@ -13,6 +13,11 @@ export function getStaticPaths() {
 }
 
 const { service } = Astro.props as { service: Service };
+const leader = operationalLeaders[service.leaderKey ?? ""];
+
+if (!leader) {
+  throw new Error(`Serviço "${service.slug}" está sem leaderKey válido em operationalLeaders.`);
+}
 ---
 
 <BaseLayout
@@ -37,7 +42,7 @@ const { service } = Astro.props as { service: Service };
     <p>{service.commercialIntro}</p>
     <div class="hero-actions">
       <a class="button button-primary" href="/contato/">Falar sobre este serviço</a>
-      <a class="button button-secondary" href="/cases/">Ver estrutura de cases</a>
+      <a class="button button-secondary" href="/cases/">Ver resultados</a>
     </div>
   </section>
 
@@ -92,14 +97,26 @@ const { service } = Astro.props as { service: Service };
     </div>
 
     <aside class="specialist-panel" data-animate>
-      <img src={service.specialist.photo} alt={`Foto de ${service.specialist.name}`} width="720" height="900" loading="lazy" />
+      <img
+        src={leader.image}
+        srcset={`${leader.imageSmall} 480w, ${leader.image} 900w`}
+        sizes="(max-width: 1100px) 92vw, 360px"
+        alt={leader.alt}
+        width="900"
+        height="1125"
+        loading="lazy"
+        decoding="async"
+      />
       <div>
-        <h2>Especialista responsável</h2>
-        <h3>{service.specialist.name}</h3>
-        <p><strong>{service.specialist.role}</strong></p>
-        <p>{service.specialist.bio}</p>
+        <h2>Quem conduz esta frente</h2>
+        <h3>{leader.name}</h3>
+        <p><strong>{leader.role}</strong></p>
+        <p>
+          Depois que o projeto começa, é {leader.name} quem responde por
+          {` ${service.shortName}`} na sua conta. O primeiro contato, esse você
+          faz com o time de vendas.
+        </p>
       </div>
-      <p class="status-note">Foto, cargo e apresentação precisam ser validados antes da publicação.</p>
     </aside>
   </div>
 </BaseLayout>

@@ -1,0 +1,153 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import Icon from "@components/Icon.astro";
+import GrowthCulture from "@components/sections/GrowthCulture.astro";
+import { company, growth, operationalLeaders } from "@data/site";
+import { breadcrumbSchema } from "@utils/schema";
+
+const specialists = Object.values(operationalLeaders);
+---
+
+<BaseLayout
+  title="Crescimento e cultura | Etraction"
+  description="Como a Etraction cresceu desde 2019 e como é fazer parte de um time que trata o trabalho como coisa de família: cultura, valores, evolução e oportunidades."
+  structuredData={breadcrumbSchema([{ label: "Crescimento", href: "/crescimento/" }])}
+>
+  <Breadcrumbs items={[{ label: "Crescimento", href: "/crescimento/" }]} />
+
+  <section class="page-hero" data-animate>
+    <p class="section-label">
+      <Icon name="sprout" size={15} />
+      {growth.eyebrow}
+    </p>
+    <h1>Uma agência se constrói com gente. A nossa se construiu com muita.</h1>
+    <p>
+      De uma sala em Rio do Sul para um time de mais de 50 pessoas atendendo mais
+      de 100 e-commerces. Esta página conta como chegamos aqui — e por que quem
+      entra costuma ficar.
+    </p>
+  </section>
+
+  <GrowthCulture variant="full" showEyebrow={false} />
+
+  <section class="section" data-animate>
+    <div class="section-header">
+      <div>
+        <p class="section-label">
+          <Icon name="users" size={15} />
+          Quem faz acontecer
+        </p>
+        <h2>Os rostos por trás de cada frente da sua operação.</h2>
+      </div>
+      <p>
+        Cada especialidade tem um responsável com nome e rosto. Depois que a
+        conta entra, é com esse time que a sua operação convive todo dia.
+      </p>
+    </div>
+
+    <div
+      class="team-carousel"
+      data-embla-carousel="team"
+      aria-roledescription="carousel"
+      aria-label="Especialistas da operação"
+    >
+      <div class="embla-viewport" data-embla-viewport>
+        <ul class="embla-container team-track">
+          {specialists.map((person, index) => (
+            <li
+              class="embla-slide team-card"
+              aria-label={`${index + 1} de ${specialists.length}: ${person.name}, ${person.role}`}
+            >
+              <img
+                src={person.imageSmall}
+                srcset={`${person.imageSmall} 480w, ${person.image} 900w`}
+                sizes="(max-width: 680px) 45vw, (max-width: 1100px) 31vw, 300px"
+                alt={person.alt}
+                width="900"
+                height="1125"
+                loading="lazy"
+                decoding="async"
+              />
+              <div>
+                <strong>{person.name}</strong>
+                <span>{person.role}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="carousel-controls">
+        <button type="button" class="carousel-button" data-embla-prev aria-label="Especialistas anteriores">←</button>
+        <div class="carousel-dots" role="tablist" aria-label="Escolher grupo de especialistas">
+          {specialists.map((_, index) => (
+            <button
+              type="button"
+              data-embla-dot
+              data-embla-index={index}
+              aria-label={`Ir para o grupo ${index + 1} de especialistas`}
+              aria-current={index === 0 ? "true" : undefined}
+            ></button>
+          ))}
+        </div>
+        <button type="button" class="carousel-button" data-embla-next aria-label="Próximos especialistas">→</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-animate>
+    <div class="section-header">
+      <div>
+        <p class="section-label">
+          <Icon name="compass" size={15} />
+          O que nos move
+        </p>
+        <h2>Missão, visão e valores que aparecem na rotina.</h2>
+      </div>
+      <p>
+        Não são frases de parede. São os critérios que a gente usa para decidir
+        uma campanha, contratar alguém ou dizer não a um projeto.
+      </p>
+    </div>
+
+    <div class="purpose-grid">
+      <article class="purpose-card">
+        <span class="purpose-icon" aria-hidden="true"><Icon name="target" size={20} /></span>
+        <h3>Missão</h3>
+        <p>{company.mission}</p>
+      </article>
+      <article class="purpose-card">
+        <span class="purpose-icon" aria-hidden="true"><Icon name="telescope" size={20} /></span>
+        <h3>Visão</h3>
+        <p>{company.vision}</p>
+      </article>
+      <article class="purpose-card purpose-card-values">
+        <span class="purpose-icon" aria-hidden="true"><Icon name="gem" size={20} /></span>
+        <h3>Valores</h3>
+        <ul>
+          {company.values.map((value) => (
+            <li>
+              <Icon name="check" size={14} />
+              <span>{value}</span>
+            </li>
+          ))}
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="cta-band" data-animate>
+    <h2>O próximo capítulo dessa história pode ser o seu.</h2>
+    <p>
+      A gente está sempre de olho em gente boa: quem gosta de e-commerce, trabalha
+      junto e quer crescer de verdade. Deixe seu perfil no banco de talentos.
+    </p>
+    <div class="hero-actions">
+      <a class="button button-on-dark" href="/carreiras/" data-track-event="cta_click" data-track-label="crescimento cta carreiras">
+        Quero fazer parte do time
+      </a>
+      <a class="button button-secondary" href="/sobre/">Conhecer a empresa</a>
+    </div>
+  </section>
+</BaseLayout>

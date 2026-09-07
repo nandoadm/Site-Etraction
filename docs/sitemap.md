@@ -15,8 +15,7 @@
 - `/cases/`
 - `/cases/[slug]/`
 - `/sobre/`
-- `/blog/`
-- `/blog/[slug]/`
+- `/crescimento/`
 - `/contato/`
 - `/carreiras/`
 - `/politica-de-privacidade/`
@@ -32,5 +31,5 @@
 ## Observações de publicação
 
 - Placeholders editoriais ficam em `noindex`.
-- O sitemap filtra slugs de demonstração como `case-em-validacao` e `conteudo-a-migrar`.
-- Posts reais do WordPress podem ser gerados estaticamente durante o build usando `PUBLIC_WORDPRESS_API_URL`.
+- O sitemap filtra slugs de demonstração como `case-em-validacao`.
+- O blog saiu do novo site. As URLs `/blog/*` do WordPress precisam de um plano de 301 antes da publicação.

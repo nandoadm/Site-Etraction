@@ -1,13 +1,20 @@
 ---
+import Icon from "@components/Icon.astro";
 import { problems } from "@data/site";
 ---
 
 <section class="section problems-section" data-animate>
   <div class="section-header">
-    <h2>Quando a operação de e-commerce cresce, os gargalos mudam de lugar.</h2>
+    <div>
+      <p class="section-label">
+        <Icon name="circle-alert" size={15} />
+        Onde costuma travar
+      </p>
+      <h2>Quando o e-commerce cresce, o gargalo muda de lugar.</h2>
+    </div>
     <p>
-      A atuação da Etraction conecta aquisição, conversão, relacionamento,
-      marketplace, criatividade e acompanhamento para atacar o problema certo.
+      O que travava no tráfego passa a travar na página, depois na base. A gente
+      ataca o problema certo, não o mais fácil.
     </p>
   </div>
   <div class="problem-table">

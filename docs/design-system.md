@@ -45,11 +45,16 @@ Movimento:
 
 ## Componentes
 
-- `Header.astro`: navegação desktop, menu de soluções e menu mobile.
+- `Header.astro`: navegação desktop, mega menu de soluções com foto do especialista de cada frente e menu mobile.
+- `Icon.astro`: ícone Lucide embutido em build time, sem JavaScript no cliente.
+- `BrandIcon.astro`: logos de Instagram e LinkedIn (o Lucide 1.x removeu marcas de terceiros).
 - `Footer.astro`: institucional, serviços, contato, redes e cookies.
-- `Hero.astro`: copy comercial, CTAs, métricas e experiência visual.
-- `GrowthScene.tsx`: ilha React Three Fiber carregada com `client:visible`.
-- `MetricsDashboard.astro`: números animados e gráfico editorial.
+- `Hero.astro`: copy comercial, CTAs, painel de resultados e cartões flutuantes com o time.
+- `MetricsDashboard.astro`: KPIs animados e três gráficos.
+- `DashboardCharts.astro`: ilha que carrega o ApexCharts por import dinâmico quando a seção se aproxima da tela.
+- `ServicesShowcase.astro`: painel fixado em três colunas no desktop, carrossel Embla no mobile.
+- `ClientsLogoExperience.astro`: campo de logos com revelação progressiva no scroll.
+- `GrowthCulture.astro`: área de crescimento e cultura, nas variantes `compact` (home) e `full` (página).
 - `ServicesOverview.astro`: lista de serviços com links internos.
 - `Methodology.astro`: timeline progressiva.
 - `CommercialForm.astro`: formulário comercial com UTM e consentimento.
@@ -62,5 +67,6 @@ Movimento:
 - Sem frases de contraste genérico.
 - Sem depoimentos, cases ou cargos inventados.
 - Sem carrosséis rápidos.
+- Blocos fixados no scroll sempre centralizados abaixo do cabeçalho fixo, com snap por item.
 - Sem dependência de JavaScript para conteúdo principal.
 - Sem smooth scroll artificial que sequestre a rolagem.

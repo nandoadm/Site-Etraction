@@ -39,14 +39,14 @@ Dados públicos reaproveitados:
 | --- | --- | --- | --- |
 | `/nova-home/` | `/` | 301 | Página legado encontrada. |
 | `/lgpd/` | `/lgpd/` | 200 | Preservar URL atual. |
-| `/blog/[slug-atual]/` | `/blog/[mesmo-slug]/` | 200 ou 301 | Depende do rastreamento final. |
+| `/blog/[slug-atual]/` | `/` ou solução relacionada | 301 | O blog saiu do novo site. Rastrear cada post e decidir o destino por URL. |
 
-## WordPress headless
+## Blog legado
 
-O utilitário `src/utils/wordpress.ts` permite buscar posts do WordPress durante o build, gerar HTML estático e preservar slugs. Configure:
+O blog não faz parte do novo site. Antes de publicar é preciso decidir, por URL, entre:
 
-```bash
-PUBLIC_WORDPRESS_API_URL=https://etraction.com.br/wp-json/wp/v2
-```
+1. Manter o conteúdo no WordPress atual em `/blog/`, fora do novo site.
+2. Redirecionar cada post para a página de solução relacionada.
+3. Redirecionar para a home quando não houver destino equivalente.
 
-A migração final ainda precisa validar autores reais, datas, imagens destacadas, categorias, tags, redirects e canonicals.
+Rastreie todos os posts com tráfego e backlinks antes de escolher. Redirecionar tudo para a home em bloco derruba os sinais orgânicos acumulados.

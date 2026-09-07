@@ -55,12 +55,7 @@ const websiteJsonLd = {
   "@type": "WebSite",
   name: site.name,
   url: site.url,
-  inLanguage: "pt-BR",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: `${site.url}/blog/?q={search_term_string}`,
-    "query-input": "required name=search_term_string"
-  }
+  inLanguage: "pt-BR"
 };
 
 const allStructuredData = [organizationJsonLd, websiteJsonLd, ...data.filter(Boolean)];

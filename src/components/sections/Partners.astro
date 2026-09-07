@@ -1,23 +1,36 @@
 ---
+import Icon from "@components/Icon.astro";
 import { partners } from "@data/site";
 ---
 
 <section class="section partners-section" data-animate>
   <div class="section-header">
-    <h2>Ecossistemas atendidos com separação clara entre parceria, plataforma e ferramenta.</h2>
+    <div>
+      <p class="section-label">
+        <Icon name="badge-check" size={15} />
+        Selos e parcerias
+      </p>
+      <h2>Certificados pelas plataformas em que investimos a verba dos clientes.</h2>
+    </div>
     <p>
-      Selos e condições oficiais precisam ser validados antes da publicação. Onde
-      não houver comprovação formal, a comunicação usa a categoria correta.
+      Não são selos de vitrine: são acesso a suporte, beta e leitura de conta.
     </p>
   </div>
 
   <div class="partner-layout">
     <section class="partner-block">
-      <h3>Certificações e parcerias a validar</h3>
+      <h3>Selos oficiais</h3>
       <ul class="partner-logo-grid">
         {partners.officialToValidate.map((partner) => (
           <li>
-            <img src={partner.logo} alt={`${partner.name} a validar`} width="150" height="72" loading="lazy" />
+            <img
+              src={partner.logo}
+              alt={partner.name}
+              width={partner.width}
+              height={partner.height}
+              loading="lazy"
+              decoding="async"
+            />
             <span>{partner.name}</span>
           </li>
         ))}
@@ -25,7 +38,7 @@ import { partners } from "@data/site";
     </section>
 
     <section class="platform-block">
-      <h3>Plataformas com que trabalhamos</h3>
+      <h3>Plataformas em que operamos</h3>
       <ul>
         {partners.platforms.map((platform) => <li>{platform}</li>)}
       </ul>

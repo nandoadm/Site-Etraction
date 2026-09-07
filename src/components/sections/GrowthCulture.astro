@@ -1,0 +1,161 @@
+---
+import Icon from "@components/Icon.astro";
+import { growth } from "@data/site";
+
+interface Props {
+  /** `full` inclui linha do tempo e CTA; `compact` é a versão usada na home. */
+  variant?: "full" | "compact";
+  headingLevel?: "h1" | "h2";
+  /** Desligado quando a página já traz o mesmo rótulo no hero. */
+  showEyebrow?: boolean;
+}
+
+const { variant = "full", headingLevel = "h2", showEyebrow = true } = Astro.props;
+const Heading = headingLevel;
+const isFull = variant === "full";
+---
+
+<section class="section growth-section" id="crescimento" data-animate>
+  <div class="growth-intro">
+    <div>
+      {showEyebrow && (
+        <p class="section-label">
+          <Icon name="sprout" size={15} />
+          {growth.eyebrow}
+        </p>
+      )}
+      <Heading>{growth.title}</Heading>
+      <p class="growth-lead">{growth.intro}</p>
+    </div>
+
+    <figure class="growth-photo">
+      <img
+        src={growth.photo.src}
+        srcset={`${growth.photo.srcSmall} 700w, ${growth.photo.src} 1400w`}
+        sizes="(max-width: 980px) 92vw, 620px"
+        alt={growth.photo.alt}
+        width={growth.photo.width}
+        height={growth.photo.height}
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>
+        <Icon name="camera" size={14} />
+        O time da Etraction em um dos eventos do setor.
+      </figcaption>
+    </figure>
+  </div>
+
+  <ul class="growth-stats" aria-label="A Etraction em números">
+    {growth.stats.map((stat) => (
+      <li>
+        <span class="growth-stat-icon" aria-hidden="true">
+          <Icon name={stat.icon} size={18} />
+        </span>
+        <strong>{stat.value}</strong>
+        <span class="growth-stat-label">{stat.label}</span>
+        <p>{stat.note}</p>
+      </li>
+    ))}
+  </ul>
+
+  <div class="growth-squads">
+    <div class="growth-squads-head">
+      <h3>Os times por trás de cada frente.</h3>
+      <p>
+        Cada especialidade tem um time que divide contexto e revisa o trabalho
+        do outro.
+      </p>
+    </div>
+    <ul class="growth-squads-grid">
+      {growth.squads.map((squad, index) => (
+        <li class="growth-squad">
+          <img
+            src={squad.image}
+            srcset={`${squad.imageSmall} 700w, ${squad.image} 1400w`}
+            sizes="(max-width: 680px) 92vw, (max-width: 980px) 46vw, 300px"
+            alt={squad.alt}
+            width="1400"
+            height="788"
+            loading={index === 0 ? "eager" : "lazy"}
+            decoding="async"
+          />
+          <div>
+            <strong>{squad.name}</strong>
+            <span>{squad.description}</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div class="growth-culture">
+    <div class="growth-culture-head">
+      <h3>Muito mais que uma empresa: é onde a gente cresce junto.</h3>
+      <p>
+        Ela não está num quadro na parede: aparece no jeito como o time se
+        ajuda e na porta que fica aberta.
+      </p>
+    </div>
+
+    <ul class="growth-culture-grid">
+      {growth.culture.map((pillar) => (
+        <li class="growth-pillar">
+          <span class="growth-pillar-icon" aria-hidden="true">
+            <Icon name={pillar.icon} size={20} />
+          </span>
+          <h4>{pillar.title}</h4>
+          <p>{pillar.description}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  {isFull && (
+    <div class="growth-timeline-block">
+      <h3>A linha do tempo de quem cresceu junto.</h3>
+      <ol class="growth-timeline">
+        {growth.timeline.map((item) => (
+          <li>
+            <span class="growth-timeline-year">{item.year}</span>
+            <div>
+              <h4>{item.title}</h4>
+              <p>{item.description}</p>
+              {"status" in item && item.status === "a_confirmar" && (
+                <p class="status-note">Marco a confirmar com a diretoria.</p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  )}
+
+  <div class="growth-cta">
+    <div>
+      <h3>{growth.cta.title}</h3>
+      <p>{growth.cta.description}</p>
+    </div>
+    <div class="hero-actions">
+      <a
+        class="button button-primary"
+        href={growth.cta.primary.href}
+        data-track-event="cta_click"
+        data-track-label="crescimento carreiras"
+      >
+        {growth.cta.primary.label}
+        <Icon name="arrow-right" size={18} class="button-arrow" />
+      </a>
+      <a
+        class="button button-secondary"
+        href={growth.cta.secondary.href}
+        target="_blank"
+        rel="noreferrer"
+        data-track-event="cta_click"
+        data-track-label="crescimento instagram"
+      >
+        {growth.cta.secondary.label}
+      </a>
+    </div>
+  </div>
+</section>

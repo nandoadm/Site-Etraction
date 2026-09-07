@@ -1,28 +1,45 @@
 ---
-import { services } from "@data/site";
+import Icon from "@components/Icon.astro";
+import { operationalLeaders, services } from "@data/site";
 ---
 
 <section class="section services-overview" data-animate>
   <div class="section-header">
-    <h2>Serviços conectados para crescimento de e-commerce.</h2>
+    <div>
+      <p class="section-label">
+        <Icon name="layers" size={15} />
+        Soluções
+      </p>
+      <h2>Serviços conectados para crescimento de e-commerce.</h2>
+    </div>
     <p>
-      Cada área tem função comercial clara, indicadores próprios e pontos de
-      integração com as demais frentes do negócio.
+      Cada frente tem indicadores próprios e um especialista responsável.
     </p>
   </div>
   <div class="service-list">
-    {services.map((service) => (
-      <article class="service-row">
-        <div>
-          <h3>{service.name}</h3>
-          <p>{service.summary}</p>
-        </div>
-        <div class="service-meta">
-          <span>Indicadores: {service.indicators.slice(0, 3).join(", ")}</span>
-          <span>Especialista: {service.specialist.name}</span>
-          <a href={`/servicos/${service.slug}/`}>Ver serviço completo</a>
-        </div>
-      </article>
-    ))}
+    {services.map((service) => {
+      const leader = service.leaderKey ? operationalLeaders[service.leaderKey] : undefined;
+      return (
+        <article class="service-row">
+          <div>
+            <h3>{service.name}</h3>
+            <p>{service.summary}</p>
+          </div>
+          <div class="service-meta">
+            {leader && (
+              <span class="service-meta-person">
+                <img src={leader.avatarSmall} alt="" width="36" height="36" loading="lazy" decoding="async" />
+                com {leader.name}
+              </span>
+            )}
+            <span>Indicadores: {service.indicators.slice(0, 3).join(", ")}</span>
+            <a href={`/servicos/${service.slug}/`}>
+              Ver serviço completo
+              <Icon name="arrow-right" size={15} />
+            </a>
+          </div>
+        </article>
+      );
+    })}
   </div>
 </section>

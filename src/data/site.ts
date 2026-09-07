@@ -2,6 +2,8 @@ export type ValidationStatus = "validado_publicamente" | "a_confirmar" | "placeh
 
 export type Service = {
   slug: string;
+  /** Chave em `operationalLeaders`, usada para a foto no menu de soluções. */
+  leaderKey?: string;
   name: string;
   shortName: string;
   intent: string;
@@ -13,13 +15,6 @@ export type Service = {
   tools: string[];
   methodology: string[];
   faq: { question: string; answer: string }[];
-  specialist: {
-    name: string;
-    role: string;
-    bio: string;
-    photo: string;
-    status: ValidationStatus;
-  };
 };
 
 export type CaseStudy = {
@@ -38,6 +33,88 @@ export type CaseStudy = {
   status: ValidationStatus;
 };
 
+export type Cta = {
+  label: string;
+  href: string;
+  external?: boolean;
+};
+
+export type Metric = {
+  value: number;
+  prefix: string;
+  suffix: string;
+  label: string;
+  note: string;
+  /** Nome do ícone Lucide usado no card. */
+  icon: string;
+  ariaLabel: string;
+  decimals?: number;
+};
+
+export type OperationalLeader = {
+  key: string;
+  name: string;
+  role?: string;
+  /** Retrato 900x1125. `imageSmall` é a versão 480px para o srcset. */
+  image: string;
+  imageSmall: string;
+  /** Avatar 192px. `avatarSmall` é a versão 96px, suficiente até 48px em telas 2x. */
+  avatar: string;
+  avatarSmall: string;
+  alt: string;
+  sourceFile: string;
+};
+
+export type HomeService = {
+  slug: string;
+  title: string;
+  /** Nome do ícone Lucide renderizado no card. */
+  icon: string;
+  description: string;
+  leaderKeys: string[];
+  deliveries: string[];
+  benefits: string[];
+  /** Página de serviço correspondente, quando existir. */
+  detailSlug?: string;
+  cta: Cta;
+};
+
+export type LogoPosition = {
+  x: number;
+  y: number;
+  rotate: number;
+  scale: number;
+  step: number;
+};
+
+export type ClientLogo = {
+  name: string;
+  logo: string;
+  width: number;
+  height: number;
+  size: "regular" | "wide" | "compact";
+  position: LogoPosition;
+};
+
+export type Testimonial = {
+  author: string;
+  company: string;
+  role: string;
+  segment: string;
+  logo: string;
+  quote: string;
+  excerpt: string;
+  status: ValidationStatus;
+};
+
+export type PartnerBadge = {
+  name: string;
+  logo: string;
+  width: number;
+  height: number;
+  status: ValidationStatus;
+};
+
 export const site = {
   name: "Etraction",
   legalName: "E-traction Marketing de Performance para E-commerce",
@@ -45,14 +122,31 @@ export const site = {
   description:
     "Agência especializada em crescimento, performance e estratégia para e-commerce.",
   instagram: "https://www.instagram.com/etraction_",
-  linkedin: "[LINKEDIN A CONFIRMAR]",
+  linkedin: "",
   email: "contato@etraction.com.br",
-  phone: "[TELEFONE A CONFIRMAR]",
-  whatsapp: "[WHATSAPP A CONFIRMAR]",
+  phone: "47 99272-9571",
+  whatsapp:
+    "https://api.whatsapp.com/send?phone=5547992454021&text=Ol%C3%A1%2C%20vim%20atrav%C3%A9s%20do%20site%20da%20ETRACTION.%20Pode%20me%20ajudar%2C%20por%20favor%3F",
   address:
     "Av. 7 de Setembro, 286, Primeiro Andar, Sala 04, Jardim América, Rio do Sul, SC",
   cnpj: "35.225.690/0001-61"
 };
+
+export const ctas = {
+  sales: {
+    label: "Falar com o time de vendas",
+    href: site.whatsapp,
+    external: true
+  },
+  services: {
+    label: "Conheça as soluções",
+    href: "#servicos"
+  },
+  contact: {
+    label: "Entrar em contato",
+    href: "/contato/"
+  }
+} satisfies Record<string, Cta>;
 
 export const sources = [
   {
@@ -82,7 +176,7 @@ export const navigation = [
   { label: "Soluções", href: "/servicos/" },
   { label: "Cases", href: "/cases/" },
   { label: "Sobre", href: "/sobre/" },
-  { label: "Conteúdos", href: "/blog/" },
+  { label: "Crescimento", href: "/crescimento/" },
   { label: "Carreiras", href: "/carreiras/" },
   { label: "Contato", href: "/contato/" }
 ];
@@ -94,7 +188,7 @@ export const serviceGroups = [
   },
   {
     objective: "Converter melhor",
-    items: ["CRO", "Design para e-commerce"]
+    items: ["CRO", "Design"]
   },
   {
     objective: "Reter e ampliar receita",
@@ -102,18 +196,10 @@ export const serviceGroups = [
   }
 ];
 
-const specialistPlaceholder = {
-  name: "[ESPECIALISTA A CONFIRMAR]",
-  role: "[CARGO A CONFIRMAR]",
-  bio:
-    "Campo reservado para apresentação profissional, foto real e confirmação de responsabilidade pela área.",
-  photo: "/assets/team/specialist-placeholder.svg",
-  status: "placeholder" as const
-};
-
 export const services: Service[] = [
   {
     slug: "cro-para-ecommerce",
+    leaderKey: "gustavo-cro",
     name: "CRO para e-commerce",
     shortName: "CRO",
     intent: "Melhorar conversão, receita por sessão e qualidade da experiência de compra.",
@@ -163,11 +249,11 @@ export const services: Service[] = [
         answer:
           "A implementação final depende da plataforma e dos acessos. O projeto prevê recomendações claras e acompanhamento com quem executa a loja."
       }
-    ],
-    specialist: specialistPlaceholder
+    ]
   },
   {
     slug: "meta-ads-para-ecommerce",
+    leaderKey: "fernando-metaads",
     name: "Meta Ads para e-commerce",
     shortName: "Meta Ads",
     intent: "Construir demanda, escalar campanhas e melhorar eficiência de aquisição.",
@@ -212,11 +298,11 @@ export const services: Service[] = [
         answer:
           "A análise deve cruzar receita, margem, estoque, recompra e custo de aquisição. O ROAS isolado não sustenta uma decisão completa."
       }
-    ],
-    specialist: specialistPlaceholder
+    ]
   },
   {
     slug: "google-ads-para-ecommerce",
+    leaderKey: "gregori-googleads",
     name: "Google Ads para e-commerce",
     shortName: "Google Ads",
     intent: "Capturar intenção de compra e melhorar presença em Shopping, pesquisa, display e YouTube.",
@@ -256,11 +342,11 @@ export const services: Service[] = [
         answer:
           "Não necessariamente. A combinação depende de histórico, mix de produtos, demanda de marca e volume de conversões."
       }
-    ],
-    specialist: specialistPlaceholder
+    ]
   },
   {
     slug: "crm-para-ecommerce",
+    leaderKey: "alana-crm",
     name: "CRM para e-commerce",
     shortName: "CRM",
     intent: "Organizar relacionamento, segmentação e recompra com base em comportamento real.",
@@ -300,11 +386,11 @@ export const services: Service[] = [
         answer:
           "Sim. E-mail é um canal. CRM define segmentos, momentos, ofertas, regras e leitura de relacionamento."
       }
-    ],
-    specialist: specialistPlaceholder
+    ]
   },
   {
     slug: "email-marketing-para-ecommerce",
+    leaderKey: "tauane-emailmarketing",
     name: "E-mail marketing para e-commerce",
     shortName: "E-mail marketing",
     intent: "Gerar receita com campanhas, automações e relacionamento de médio prazo.",
@@ -344,11 +430,11 @@ export const services: Service[] = [
         answer:
           "A frequência depende de base, mix de produtos, calendário comercial e engajamento. O plano evita saturar a audiência."
       }
-    ],
-    specialist: specialistPlaceholder
+    ]
   },
   {
     slug: "marketplace",
+    leaderKey: "marquinho-marketplace",
     name: "Gestão de marketplace",
     shortName: "Marketplace",
     intent: "Transformar presença em marketplaces em operação comercial acompanhada por dados.",
@@ -388,11 +474,11 @@ export const services: Service[] = [
         answer:
           "Não. Marketplace pode ampliar alcance, mas precisa ser avaliado junto com margem, marca, base própria e dependência de canal."
       }
-    ],
-    specialist: specialistPlaceholder
+    ]
   },
   {
     slug: "design-para-ecommerce",
+    leaderKey: "joaquim-designer",
     name: "Design para e-commerce",
     shortName: "Design",
     intent: "Melhorar comunicação visual, clareza de oferta e consistência em loja, mídia e CRM.",
@@ -432,11 +518,11 @@ export const services: Service[] = [
         answer:
           "Sim. Quando não há manual, o projeto pode criar padrões mínimos para manter consistência."
       }
-    ],
-    specialist: specialistPlaceholder
+    ]
   },
   {
     slug: "sucesso-do-cliente",
+    leaderKey: "juliana-sucessocliente",
     name: "Sucesso do cliente para e-commerce",
     shortName: "Sucesso do cliente",
     intent: "Manter acompanhamento próximo, cadência clara e decisões integradas entre agência e cliente.",
@@ -476,53 +562,479 @@ export const services: Service[] = [
         answer:
           "O responsável de sucesso do cliente coordena a comunicação, mas as decisões técnicas são construídas com cada especialista."
       }
-    ],
-    specialist: specialistPlaceholder
+    ]
   }
 ];
 
-export const metrics = [
-  {
-    value: 70,
-    prefix: "+",
-    suffix: "",
-    label: "clientes ativos",
-    note: "Dado exibido na home atual. Data de referência a confirmar."
-  },
-  {
-    value: 50,
-    prefix: "+ R$",
-    suffix: " mi",
-    label: "investidos em mídia",
-    note: "Dado exibido na home atual. Data de referência a confirmar."
-  },
-  {
-    value: 1,
-    prefix: "+ R$",
-    suffix: " bi",
-    label: "em vendas geradas",
-    note: "Dado exibido na home atual. Data de referência a confirmar."
-  },
+export const metrics: Metric[] = [
   {
     value: 100,
     prefix: "+",
     suffix: "",
-    label: "e-commerces atendidos",
-    note: "Dado exibido na home atual. Data de referência a confirmar."
+    label: "clientes ativos",
+    note: "Com rotina e responsável definidos.",
+    icon: "users",
+    ariaLabel: "Mais de 100 clientes ativos"
+  },
+  {
+    value: 50,
+    prefix: "+",
+    suffix: "",
+    label: "no time",
+    note: "Especialistas em mídia, dados, conteúdo e design.",
+    icon: "users-round",
+    ariaLabel: "Mais de 50 pessoas no time"
+  },
+  {
+    value: 80,
+    prefix: "R$ ",
+    suffix: "M",
+    label: "investidos em mídia",
+    note: "Verba gerida em mídia e marketplace.",
+    icon: "wallet",
+    ariaLabel: "Mais de 80 milhões de reais investidos em mídia"
+  },
+  {
+    value: 1,
+    prefix: "R$ ",
+    suffix: "B",
+    label: "em vendas geradas",
+    note: "Nas operações atendidas desde 2019.",
+    icon: "trending-up",
+    ariaLabel: "Mais de 1 bilhão de reais em vendas geradas"
   }
 ];
 
-export const clients = [
-  { name: "Cia Light", logo: "/assets/clients/cia-light.svg" },
-  { name: "Epulari", logo: "/assets/clients/epulari.svg" },
-  { name: "Via", logo: "/assets/clients/via.svg" },
-  { name: "Smeg", logo: "/assets/clients/smeg.svg" },
-  { name: "Floresta", logo: "/assets/clients/floresta.svg" },
-  { name: "Black Targ", logo: "/assets/clients/blacktarg.svg" },
-  { name: "Dkadi", logo: "/assets/clients/dkadi.svg" },
-  { name: "Jango", logo: "/assets/clients/jango.svg" },
-  { name: "MV", logo: "/assets/clients/mv.svg" },
-  { name: "Maloa", logo: "/assets/clients/maloa.svg" }
+/**
+ * Séries do dashboard. Os dois valores são os indicadores públicos da Etraction
+ * (R$ 80 mi investidos e R$ 1 bi em vendas); o múltiplo é derivado deles.
+ */
+export const dashboardData = {
+  /**
+   * Indicadores lidos em cada frente, agrupados por objetivo. Os itens saem de
+   * `services[].indicators`, então o painel reflete o que as páginas de serviço
+   * já prometem acompanhar.
+   */
+  tracking: {
+    label: "O que acompanhamos",
+    caption: "Os indicadores lidos toda semana em cada frente da operação.",
+    groups: [
+      {
+        key: "aquisicao",
+        title: "Aquisição",
+        icon: "trending-up",
+        detail: "Meta Ads, Google Ads e Marketplace",
+        indicators: ["ROAS", "CPA", "Receita atribuída", "Margem", "ACOS", "Parcela de impressão"]
+      },
+      {
+        key: "conversao",
+        title: "Conversão",
+        icon: "target",
+        detail: "CRO e Design",
+        indicators: ["Taxa de conversão", "Receita por sessão", "Ticket médio", "Abandono de carrinho", "CTR"]
+      },
+      {
+        key: "retencao",
+        title: "Retenção",
+        icon: "repeat",
+        detail: "CRM, E-mail marketing e Sucesso do cliente",
+        indicators: ["LTV", "Recompra", "Receita por base", "Churn", "Entregabilidade"]
+      }
+    ]
+  },
+  coverage: {
+    label: "Onde a Etraction opera",
+    caption: "Plataformas e canais que o time já roda no dia a dia.",
+    groups: [
+      {
+        title: "Plataformas de e-commerce",
+        icon: "store",
+        items: ["Magazord", "Shopify", "Nuvemshop", "Tray", "Loja Integrada"]
+      },
+      {
+        title: "Canais de mídia e marketplace",
+        icon: "megaphone",
+        items: ["Google Ads", "Meta Ads", "TikTok", "Pinterest", "Marketplaces"]
+      }
+    ]
+  }
+};
+
+export const operationalLeaders: Record<string, OperationalLeader> = {
+  "gustavo-cro": {
+    key: "gustavo-cro",
+    name: "Gustavo",
+    role: "CRO",
+    image: "/assets/team/operations/gustavo-cro.webp",
+    imageSmall: "/assets/team/operations/gustavo-cro-480.webp",
+    avatar: "/assets/team/operations/gustavo-cro-avatar.webp",
+    avatarSmall: "/assets/team/operations/gustavo-cro-avatar-96.webp",
+    alt: "Foto de Gustavo, especialista de CRO da Etraction",
+    sourceFile: "assets/gustavo-cro.jpg"
+  },
+  "fernando-metaads": {
+    key: "fernando-metaads",
+    name: "Fernando",
+    role: "Meta Ads",
+    image: "/assets/team/operations/fernando-metaads.webp",
+    imageSmall: "/assets/team/operations/fernando-metaads-480.webp",
+    avatar: "/assets/team/operations/fernando-metaads-avatar.webp",
+    avatarSmall: "/assets/team/operations/fernando-metaads-avatar-96.webp",
+    alt: "Foto de Fernando, especialista de Meta Ads da Etraction",
+    sourceFile: "assets/fernando-metaads.jpg"
+  },
+  "gregori-googleads": {
+    key: "gregori-googleads",
+    name: "Gregori",
+    role: "Google Ads",
+    image: "/assets/team/operations/gregori-googleads.webp",
+    imageSmall: "/assets/team/operations/gregori-googleads-480.webp",
+    avatar: "/assets/team/operations/gregori-googleads-avatar.webp",
+    avatarSmall: "/assets/team/operations/gregori-googleads-avatar-96.webp",
+    alt: "Foto de Gregori, especialista de Google Ads da Etraction",
+    sourceFile: "assets/gregori-googleads.jpg"
+  },
+  "alana-crm": {
+    key: "alana-crm",
+    name: "Alana",
+    role: "CRM",
+    image: "/assets/team/operations/alana-crm.webp",
+    imageSmall: "/assets/team/operations/alana-crm-480.webp",
+    avatar: "/assets/team/operations/alana-crm-avatar.webp",
+    avatarSmall: "/assets/team/operations/alana-crm-avatar-96.webp",
+    alt: "Foto de Alana, especialista de CRM da Etraction",
+    sourceFile: "assets/alana-crm.jpg"
+  },
+  "tauane-emailmarketing": {
+    key: "tauane-emailmarketing",
+    name: "Tauane",
+    role: "E-mail Marketing",
+    image: "/assets/team/operations/tauane-emailmarketing.webp",
+    imageSmall: "/assets/team/operations/tauane-emailmarketing-480.webp",
+    avatar: "/assets/team/operations/tauane-emailmarketing-avatar.webp",
+    avatarSmall: "/assets/team/operations/tauane-emailmarketing-avatar-96.webp",
+    alt: "Foto de Tauane, especialista de E-mail Marketing da Etraction",
+    sourceFile: "assets/tauane-emailmarketing.jpg"
+  },
+  "marquinho-marketplace": {
+    key: "marquinho-marketplace",
+    name: "Marquinho",
+    role: "Marketplace",
+    image: "/assets/team/operations/marquinho-marketplace.webp",
+    imageSmall: "/assets/team/operations/marquinho-marketplace-480.webp",
+    avatar: "/assets/team/operations/marquinho-marketplace-avatar.webp",
+    avatarSmall: "/assets/team/operations/marquinho-marketplace-avatar-96.webp",
+    alt: "Foto de Marquinho, especialista de Marketplace da Etraction",
+    sourceFile: "assets/marquinho-marketplace.jpg"
+  },
+  "maria-socialmidia": {
+    key: "maria-socialmidia",
+    name: "Maria",
+    role: "Social Media",
+    image: "/assets/team/operations/maria-socialmidia.webp",
+    imageSmall: "/assets/team/operations/maria-socialmidia-480.webp",
+    avatar: "/assets/team/operations/maria-socialmidia-avatar.webp",
+    avatarSmall: "/assets/team/operations/maria-socialmidia-avatar-96.webp",
+    alt: "Foto de Maria, especialista de Social Media da Etraction",
+    sourceFile: "assets/maria-socialmidia.png"
+  },
+  "juliana-sucessocliente": {
+    key: "juliana-sucessocliente",
+    name: "Juliana",
+    role: "Sucesso do Cliente",
+    image: "/assets/team/operations/juliana-sucessocliente.webp",
+    imageSmall: "/assets/team/operations/juliana-sucessocliente-480.webp",
+    avatar: "/assets/team/operations/juliana-sucessocliente-avatar.webp",
+    avatarSmall: "/assets/team/operations/juliana-sucessocliente-avatar-96.webp",
+    alt: "Foto de Juliana, especialista de Sucesso do Cliente da Etraction",
+    sourceFile: "assets/juliana-sucessocliente.jpg"
+  },
+  "joaquim-designer": {
+    key: "joaquim-designer",
+    name: "Joaquim",
+    role: "Design Gráfico",
+    image: "/assets/team/operations/joaquim-designer.webp",
+    imageSmall: "/assets/team/operations/joaquim-designer-480.webp",
+    avatar: "/assets/team/operations/joaquim-designer-avatar.webp",
+    avatarSmall: "/assets/team/operations/joaquim-designer-avatar-96.webp",
+    alt: "Foto de Joaquim, especialista de Design Gráfico da Etraction",
+    sourceFile: "assets/joaquim-designer.jpg"
+  }
+};
+
+export const homeServices: HomeService[] = [
+  {
+    slug: "cro",
+    title: "CRO",
+    icon: "target",
+    description:
+      "Transformamos o tráfego que você já paga em mais pedidos, testando página, oferta e checkout com método.",
+    leaderKeys: ["gustavo-cro"],
+    deliveries: [
+      "Diagnóstico de conversão em toda a jornada de compra.",
+      "Testes priorizados em página, oferta e checkout.",
+      "Leitura contínua dos aprendizados de conversão."
+    ],
+    benefits: [
+      "Mais receita sem aumentar o investimento.",
+      "Menos fricção entre o clique e o pedido.",
+      "Decisões de página apoiadas em comportamento real."
+    ],
+    detailSlug: "cro-para-ecommerce",
+    cta: ctas.sales
+  },
+  {
+    slug: "performance",
+    title: "Performance",
+    icon: "trending-up",
+    description:
+      "Meta Ads e Google Ads operados com leitura comercial: cada real investido responde por receita, margem e escala.",
+    leaderKeys: ["fernando-metaads", "gregori-googleads"],
+    deliveries: [
+      "Estruturação de campanhas por objetivo comercial.",
+      "Rotina semanal de otimização de verba e criativos.",
+      "Acompanhamento de CAC, ROAS e receita por canal."
+    ],
+    benefits: [
+      "Investimento com leitura de margem, não só de ROAS.",
+      "Criativos conectados à oferta e ao funil.",
+      "Escala com previsibilidade de aquisição."
+    ],
+    detailSlug: "meta-ads-para-ecommerce",
+    cta: ctas.sales
+  },
+  {
+    slug: "marketplace",
+    title: "Marketplace",
+    icon: "store",
+    description:
+      "Presença organizada nos grandes canais de venda, com anúncio, preço e operação alinhados à loja própria.",
+    leaderKeys: ["marquinho-marketplace"],
+    deliveries: [
+      "Estruturação de catálogo, títulos e fichas de produto.",
+      "Gestão de anúncios e campanhas dentro dos canais.",
+      "Leitura de preço, concorrência e reputação."
+    ],
+    benefits: [
+      "Mais um canal de receita sob controle.",
+      "Menos conflito entre marketplace e loja própria.",
+      "Operação preparada para picos de demanda."
+    ],
+    detailSlug: "marketplace",
+    cta: ctas.sales
+  },
+  {
+    slug: "crm",
+    title: "CRM",
+    icon: "repeat",
+    description:
+      "A base que você já conquistou volta a comprar. Segmentação, automações e recompra trabalhadas com cadência.",
+    leaderKeys: ["alana-crm"],
+    deliveries: [
+      "Segmentação da base por comportamento e ciclo de compra.",
+      "Automações de recuperação, boas-vindas e recompra.",
+      "Leitura de LTV, frequência e retenção."
+    ],
+    benefits: [
+      "Receita recorrente com custo de mídia menor.",
+      "Clientes acompanhados depois da primeira compra.",
+      "Previsibilidade vinda da própria base."
+    ],
+    detailSlug: "crm-para-ecommerce",
+    cta: ctas.sales
+  },
+  {
+    slug: "email-marketing",
+    title: "E-mail Marketing",
+    icon: "mail",
+    description:
+      "Campanhas conectadas ao calendário comercial, com segmentação que respeita quem está do outro lado.",
+    leaderKeys: ["tauane-emailmarketing"],
+    deliveries: [
+      "Planejamento de campanhas por calendário comercial.",
+      "Segmentação da base para comunicações relevantes.",
+      "Análise de entregabilidade, engajamento e conversão."
+    ],
+    benefits: [
+      "Canal próprio, sem depender de leilão de mídia.",
+      "Consistência entre oferta e comunicação.",
+      "Fidelização trabalhada com ritmo."
+    ],
+    detailSlug: "email-marketing-para-ecommerce",
+    cta: ctas.sales
+  },
+  {
+    slug: "social-media",
+    title: "Social Media",
+    icon: "megaphone",
+    description:
+      "Conteúdo com ritmo e identidade, construindo audiência que reconhece a marca antes de precisar comprar.",
+    leaderKeys: ["maria-socialmidia"],
+    deliveries: [
+      "Rotina editorial planejada por objetivo.",
+      "Produção de conteúdo alinhada às campanhas.",
+      "Leitura de engajamento e presença de marca."
+    ],
+    benefits: [
+      "Marca presente onde o público já está.",
+      "Comunicação com ritmo e consistência.",
+      "Conteúdo conectado ao calendário do e-commerce."
+    ],
+    cta: ctas.sales
+  },
+  {
+    slug: "sucesso-do-cliente",
+    title: "Sucesso do Cliente",
+    icon: "handshake",
+    description:
+      "Um time que conhece a sua operação pelo nome. Cadência de reunião, prioridade clara e próximo passo definido.",
+    leaderKeys: ["juliana-sucessocliente"],
+    deliveries: [
+      "Reuniões de acompanhamento com pauta e histórico.",
+      "Leitura conjunta de prioridades e gargalos.",
+      "Encaminhamento direto para o especialista certo."
+    ],
+    benefits: [
+      "Proximidade real entre cliente e operação.",
+      "Clareza para decidir o próximo movimento.",
+      "Estratégia conectada à rotina de execução."
+    ],
+    detailSlug: "sucesso-do-cliente",
+    cta: ctas.sales
+  },
+  {
+    slug: "design-grafico",
+    title: "Design Gráfico",
+    icon: "palette",
+    description:
+      "Criativos que vendem e sustentam a marca: campanha, banner e página com a mesma linguagem visual.",
+    leaderKeys: ["joaquim-designer"],
+    deliveries: [
+      "Criação de peças por campanha e canal.",
+      "Hierarquia visual construída para a oferta.",
+      "Adaptação de criativos para cada formato digital."
+    ],
+    benefits: [
+      "Identidade visual consistente em todos os pontos.",
+      "Comunicação de oferta mais clara.",
+      "Criativos alinhados à estratégia da marca."
+    ],
+    detailSlug: "design-para-ecommerce",
+    cta: ctas.sales
+  },
+];
+
+export const clients: ClientLogo[] = [
+  {
+    name: "Cia Light",
+    logo: "/assets/clients/cia-light.svg",
+    width: 180,
+    height: 72,
+    size: "regular",
+    position: { x: 50, y: 48, rotate: 0, scale: 1.06, step: 0 }
+  },
+  {
+    name: "Epulari",
+    logo: "/assets/clients/epulari.svg",
+    width: 180,
+    height: 72,
+    size: "regular",
+    position: { x: 68, y: 18, rotate: 1.2, scale: 0.95, step: 4 }
+  },
+  {
+    name: "Via",
+    logo: "/assets/clients/via.svg",
+    width: 160,
+    height: 72,
+    size: "compact",
+    position: { x: 28, y: 38, rotate: -1.1, scale: 0.92, step: 3 }
+  },
+  {
+    name: "Smeg",
+    logo: "/assets/clients/smeg.svg",
+    width: 180,
+    height: 72,
+    size: "regular",
+    position: { x: 42, y: 14, rotate: -0.7, scale: 0.95, step: 2 }
+  },
+  {
+    name: "Floresta",
+    logo: "/assets/clients/floresta.svg",
+    width: 180,
+    height: 72,
+    size: "regular",
+    position: { x: 84, y: 84, rotate: -0.9, scale: 0.94, step: 10 }
+  },
+  {
+    name: "Black Targ",
+    logo: "/assets/clients/blacktarg.svg",
+    width: 180,
+    height: 72,
+    size: "regular",
+    position: { x: 22, y: 78, rotate: 1.1, scale: 0.95, step: 9 }
+  },
+  {
+    name: "DKadi Decor",
+    logo: "/assets/clients/dkadi.svg",
+    width: 180,
+    height: 72,
+    size: "regular",
+    position: { x: 75, y: 42, rotate: -1, scale: 1, step: 6 }
+  },
+  {
+    name: "Jango",
+    logo: "/assets/clients/jango.svg",
+    width: 180,
+    height: 72,
+    size: "regular",
+    position: { x: 17, y: 18, rotate: 0.8, scale: 0.95, step: 1 }
+  },
+  {
+    name: "MV",
+    logo: "/assets/clients/mv.svg",
+    width: 150,
+    height: 72,
+    size: "compact",
+    position: { x: 90, y: 58, rotate: 0.9, scale: 0.88, step: 8 }
+  },
+  {
+    name: "Correia",
+    logo: "/assets/clients/logo-1.webp",
+    width: 220,
+    height: 67,
+    size: "wide",
+    position: { x: 12, y: 56, rotate: -0.8, scale: 0.96, step: 7 }
+  },
+  {
+    name: "ARM Fitness",
+    logo: "/assets/clients/logo-arm.webp",
+    width: 146,
+    height: 61,
+    size: "compact",
+    position: { x: 88, y: 24, rotate: 1, scale: 0.9, step: 5 }
+  },
+  {
+    name: "Maloa",
+    logo: "/assets/clients/maloa.svg",
+    width: 180,
+    height: 72,
+    size: "regular",
+    position: { x: 46, y: 84, rotate: -1.2, scale: 0.95, step: 11 }
+  },
+  {
+    name: "Move Fitness",
+    logo: "/assets/clients/move-fitness.webp",
+    width: 418,
+    height: 98,
+    size: "wide",
+    position: { x: 67, y: 76, rotate: 0.7, scale: 0.88, step: 12 }
+  }
+];
+
+export const homeBenefits = [
+  "Estratégia integrada entre aquisição, conversão, relacionamento e marca.",
+  "Criatividade orientada por dados para campanhas, jornadas e ofertas.",
+  "Rotina próxima com o cliente para transformar aprendizado em execução."
 ];
 
 export const problems = [
@@ -606,32 +1118,46 @@ export const methodology = [
   }
 ];
 
-export const partners = {
+export const partners: {
+  officialToValidate: PartnerBadge[];
+  platforms: string[];
+  tools: string;
+} = {
   officialToValidate: [
     {
       name: "Google Premier Partner",
       logo: "/assets/partners/google-premier-2025.webp",
-      status: "a_confirmar" as const
+      width: 287,
+      height: 274,
+      status: "validado_publicamente"
     },
     {
       name: "Meta Partner",
       logo: "/assets/partners/meta-partner-2025.webp",
-      status: "a_confirmar" as const
+      width: 287,
+      height: 273,
+      status: "validado_publicamente"
     },
     {
       name: "TikTok",
       logo: "/assets/partners/tiktok.svg",
-      status: "a_confirmar" as const
+      width: 180,
+      height: 72,
+      status: "validado_publicamente"
     },
     {
       name: "Pinterest",
       logo: "/assets/partners/pinterest.svg",
-      status: "a_confirmar" as const
+      width: 180,
+      height: 72,
+      status: "validado_publicamente"
     },
     {
       name: "Edrone",
       logo: "/assets/partners/edrone.svg",
-      status: "a_confirmar" as const
+      width: 180,
+      height: 72,
+      status: "validado_publicamente"
     }
   ],
   platforms: ["Magazord", "Shopify", "Nuvemshop", "Tray", "Loja Integrada"],
@@ -657,16 +1183,18 @@ export const company = {
       name: "Leandro Rodrigo Dalponte",
       role: "Sócio administrador",
       photo: "/assets/team/leandro-dalponte.webp",
+      photoSmall: "/assets/team/leandro-dalponte-480.webp",
       bio:
-        "Biografia, formação, trajetória e LinkedIn precisam ser validados antes da publicação.",
+        "Cofundador da Etraction, atua na estratégia comercial e no relacionamento com as operações atendidas.",
       status: "a_confirmar" as const
     },
     {
       name: "Vinicius Baldessar",
       role: "Sócio administrador",
-      photo: "/assets/team/leader-placeholder.svg",
+      photo: "/assets/team/vinicius-baldessar.webp",
+      photoSmall: "/assets/team/vinicius-baldessar-480.webp",
       bio:
-        "Foto, biografia, formação, trajetória e LinkedIn precisam ser validados antes da publicação.",
+        "Cofundador da Etraction, acompanha a estrutura de performance e a formação do time de especialistas.",
       status: "a_confirmar" as const
     }
   ],
@@ -692,50 +1220,223 @@ export const company = {
       year: "[ANO A CONFIRMAR]",
       title: "Evolução dos serviços",
       description:
-        "Campo editável para registrar entrada de CRO, CRM, marketplace, design e sucesso do cliente."
+      "Campo editável para registrar entrada de CRO, CRM, marketplace, design e sucesso do cliente."
     },
     {
       year: "[ANO A CONFIRMAR]",
       title: "Certificações e selos",
       description:
-        "Campo editável para datas, condições e validade de certificações oficiais."
+      "Campo editável para datas, condições e validade de certificações oficiais."
     },
     {
       year: "[ANO A CONFIRMAR]",
       title: "Crescimento da equipe",
       description:
-        "Campo editável para marcos de equipe, eventos, estrutura e conquistas."
+      "Campo editável para marcos de equipe, eventos, estrutura e conquistas."
     }
   ]
 };
 
-export const testimonials = [
+export const growth = {
+  eyebrow: "Crescimento Etraction",
+  title: "A gente cresce junto. Com o cliente, e com quem faz a Etraction acontecer.",
+  intro:
+    "A Etraction nasceu em 2019, em Rio do Sul, com uma ideia simples: fazer e-commerce crescer de verdade, com gente que se importa. Hoje somos um time multidisciplinar que atende mais de 100 operações.",
+  photo: {
+    src: "/assets/team/time-gestores.webp",
+    srcSmall: "/assets/team/time-gestores-700.webp",
+    alt: "Gestores da Etraction reunidos no escritório da agência",
+    width: 1400,
+    height: 788
+  },
+
+  /** Fotos de time por frente. */
+  squads: [
+    {
+      key: "time-cro",
+      name: "Time de CRO",
+      description: "Testa página, oferta e checkout para transformar visita em pedido.",
+      image: "/assets/team/time-cro.webp",
+      imageSmall: "/assets/team/time-cro-700.webp",
+      alt: "Time de CRO da Etraction"
+    },
+    {
+      key: "time-crm",
+      name: "Time de CRM e E-mail",
+      description: "Cuida da base, da recompra e do relacionamento depois da primeira venda.",
+      image: "/assets/team/time-crm.webp",
+      imageSmall: "/assets/team/time-crm-700.webp",
+      alt: "Time de CRM e e-mail marketing da Etraction"
+    },
+    {
+      key: "time-marketplace",
+      name: "Time de Marketplace",
+      description: "Organiza catálogo, anúncio e preço nos grandes canais de venda.",
+      image: "/assets/team/time-marketplace.webp",
+      imageSmall: "/assets/team/time-marketplace-700.webp",
+      alt: "Time de marketplace da Etraction"
+    },
+    {
+      key: "time-designer",
+      name: "Time de Design",
+      description: "Cria os criativos e a comunicação visual que sustentam as campanhas.",
+      image: "/assets/team/time-designer.webp",
+      imageSmall: "/assets/team/time-designer-700.webp",
+      alt: "Time de design da Etraction"
+    },
+    {
+      key: "time-etraction",
+      name: "A Etraction em evento",
+      description: "O time inteiro nos encontros do setor, onde o mercado se atualiza.",
+      image: "/assets/team/time-etraction.webp",
+      imageSmall: "/assets/team/time-etraction-700.webp",
+      alt: "Time da Etraction reunido no estande da agência em um evento de e-commerce"
+    }
+  ],
+  /** Números de equipe, com a fonte pública de cada um. */
+  stats: [
+    {
+      value: "2019",
+      label: "ano de fundação",
+      note: "Rio do Sul, Santa Catarina.",
+      icon: "flag",
+      source: "Perfil da empresa no LinkedIn"
+    },
+    {
+      value: "50+",
+      label: "pessoas no time",
+      note: "Especialistas em mídia, dados, conteúdo, design e atendimento.",
+      icon: "users-round",
+      source: "Perfil da empresa no LinkedIn"
+    },
+    {
+      value: "8",
+      label: "frentes de especialidade",
+      note: "Cada cliente tem um responsável com nome e rosto em cada frente.",
+      icon: "layers",
+      source: "Estrutura de serviços da Etraction"
+    },
+    {
+      value: "100+",
+      label: "e-commerces atendidos",
+      note: "Operações de portes e segmentos diferentes, do nicho ao alto volume.",
+      icon: "store",
+      source: "Site institucional da Etraction"
+    }
+  ],
+  /** Pilares de cultura: como é trabalhar aqui. */
+  culture: [
+    {
+      icon: "heart",
+      title: "Mais que empresa, é família",
+      description:
+        "Ninguém é número de crachá. As pessoas se conhecem pelo nome, comemoram junto e seguram a barra junto."
+    },
+    {
+      icon: "sprout",
+      title: "Cresce quem quer crescer",
+      description:
+        "Plano de evolução por frente e espaço real para assumir mais. Boa parte da liderança começou na operação."
+    },
+    {
+      icon: "users",
+      title: "Time junto, do briefing ao resultado",
+      description:
+        "Mídia, CRO, CRM, design e atendimento na mesma conversa. O resultado do cliente é de todo mundo."
+    },
+    {
+      icon: "message-circle",
+      title: "Porta aberta, de verdade",
+      description:
+        "Sócios acessíveis, feedback direto e decisão explicada. Se algo não funciona, se fala e se resolve."
+    },
+    {
+      icon: "graduation-cap",
+      title: "Aprender faz parte do expediente",
+      description:
+        "Certificações, treinamentos e tempo para estudar o que muda toda semana no e-commerce."
+    },
+    {
+      icon: "party-popper",
+      title: "Trabalho sério, ambiente leve",
+      description:
+        "Meta alta e clima bom não são opostos. Eventos, viagens de time e uma rotina em que dá gosto estar."
+    }
+  ],
+  /** Marcos de crescimento. Anos entre colchetes seguem a confirmar. */
+  timeline: [
+    {
+      year: "2019",
+      title: "A Etraction começa em Rio do Sul",
+      description:
+        "Dois sócios, uma sala e a decisão de atender e-commerce em vez de ser mais uma agência generalista."
+    },
+    {
+      year: "2021",
+      title: "Especialização por frente",
+      description:
+        "A operação deixa de ser generalista e passa a ter donos por canal: Meta Ads, Google Ads, e-mail e design.",
+      status: "a_confirmar" as const
+    },
+    {
+      year: "2023",
+      title: "Estrutura completa de crescimento",
+      description:
+        "Entram CRO, CRM, marketplace e sucesso do cliente. O time cruza a marca de dezenas de pessoas.",
+      status: "a_confirmar" as const
+    },
+    {
+      year: "Hoje",
+      title: "Mais de 100 e-commerces e um bilhão acompanhado",
+      description:
+        "Mais de 50 pessoas, presença em eventos do setor e a mesma meta: ser referência nacional em performance para e-commerce."
+    }
+  ],
+  cta: {
+    title: "Quer crescer com a gente?",
+    description:
+      "Se você é apaixonado por e-commerce, gosta de trabalhar perto das pessoas e quer um lugar onde dá para evoluir de verdade, deixe seu perfil no nosso banco de talentos.",
+    primary: { label: "Fazer parte do time", href: "/carreiras/" },
+    secondary: { label: "Ver a Etraction por dentro", href: site.instagram, external: true }
+  }
+};
+
+export const testimonials: Testimonial[] = [
   {
     author: "David Saraça",
     company: "Jango",
-    role: "Diretor comercial",
-    segment: "Embalagem",
-    summary:
-      "Depoimento público no site atual cita organização de lançamentos, suporte constante, dashboards e parceria próxima.",
-    status: "a_confirmar" as const
+    role: "Diretor comercial da Jango",
+    segment: "Embalagens",
+    logo: "/assets/testimonials/jango.svg",
+    quote:
+      "A parceria com a Etraction foi, sem dúvida, um divisor de águas para o nosso negócio e para o momento da empresa. Desde o início, demonstraram um olhar atento e sensível ao nosso estilo, compreendendo com precisão o DNA da nossa marca — algo raro e extremamente valioso. Eles tornaram nosso site muito mais dinâmico, com uma estrutura visual que facilita a navegação e destaca, com agilidade, os produtos estratégicos. A organização dos lançamentos ficou impecável, com cronogramas bem definidos e criativos que seguem um padrão de qualidade admirável — algo que antes exigia grande esforço da nossa equipe interna. Com isso, conseguimos direcionar nosso foco para a criação e o desenvolvimento de novos produtos. Outro ponto de destaque é o suporte constante: cumprem prazos com excelência, antecipam soluções e nos ajudam a construir estratégias claras e viáveis. Cada etapa — briefing, criação, entrega e ajustes — é conduzida com profissionalismo, escuta ativa e agilidade. A gestão de tráfego, com dashboards bem estruturados, trouxe informações precisas que facilitaram a tomada de decisão. Mais do que uma equipe técnica, a Etraction se tornou uma extensão do nosso time. O relacionamento vai além do profissional — são parceiros comprometidos e, acima de tudo, pessoas com quem criamos uma amizade.",
+    excerpt:
+      "A parceria com a Etraction foi, sem dúvida, um divisor de águas para o nosso negócio e para o momento da empresa.",
+    status: "validado_publicamente"
   },
   {
     author: "Luiz Paulo",
     company: "Femme",
-    role: "Proprietário",
+    role: "Proprietário da loja Femme",
     segment: "Moda feminina",
-    summary:
-      "Depoimento público no site atual cita atenção aos detalhes, estrutura de estratégia e entendimento da marca.",
-    status: "a_confirmar" as const
+    logo: "/assets/testimonials/femme.svg",
+    quote:
+      "Gostaríamos de registrar o quanto estamos satisfeitos com o serviço que vocês vêm prestando. Desde o início da nossa parceria, temos notado um cuidado especial com cada detalhe, além de estratégias muito bem estruturadas que já estão trazendo resultados visíveis para o nosso negócio. A equipe é extremamente profissional, atenciosa e sempre disponível para tirar dúvidas e propor soluções criativas. Sentimos que realmente entenderam a essência da nossa marca e isso faz toda a diferença.",
+    excerpt:
+      "Gostaríamos de registrar o quanto estamos satisfeitos com o serviço que vocês vêm prestando.",
+    status: "validado_publicamente"
   },
   {
     author: "Ricardo",
-    company: "Dkadi Decor",
-    role: "Proprietário",
+    company: "DKadi Decor",
+    role: "Proprietário da DKadi Decor",
     segment: "Móveis",
-    summary:
-      "Depoimento público no site atual cita apoio no layout, tráfego pago, marketplaces e troca constante de informações.",
-    status: "a_confirmar" as const
+    logo: "/assets/testimonials/dkadi-decor.svg",
+    quote:
+      "Falar da Etraction é muito fácil. Desde o início da jornada da Dkadi Decor, contei com total apoio da equipe: desde o layout do site até todos os detalhes do e-commerce. Hoje temos uma equipe interna de marketing que cuida de SEO e anúncios em marketplaces, trabalhando em conjunto com a Etraction. Todo o cuidado com nosso e-commerce está nas mãos deles, mas o diferencial está na troca constante de informações — sempre com disponibilidade e colaboração. Confiamos 100% do nosso tráfego pago e campanhas à Etraction, pois os resultados entregues são consistentes e há uma parceria real entre as equipes. A Etraction vai além de uma agência: é uma assessoria de marketing que nos orienta com segurança, assim como temos apoio jurídico e contábil. Em apenas 3 anos, os resultados da Dkadi Decor comprovam isso. Falo com propriedade, pois tudo o que menciono posso provar com números, telas, vendas e resultados concretos.",
+    excerpt:
+      "Falar da Etraction é muito fácil. Desde o início da jornada da Dkadi Decor, contei com total apoio da equipe.",
+    status: "validado_publicamente"
   }
 ];
 
@@ -757,20 +1458,6 @@ export const caseStudies: CaseStudy[] = [
   }
 ];
 
-export const blogPosts = [
-  {
-    slug: "conteudo-a-migrar",
-    title: "Conteúdo do blog a migrar do WordPress",
-    description:
-      "Página técnica placeholder para testar o template. Os artigos reais devem ser importados do WordPress antes da publicação.",
-    author: "[AUTOR A CONFIRMAR]",
-    publishedAt: "[DATA A CONFIRMAR]",
-    updatedAt: "[DATA A CONFIRMAR]",
-    category: "Migração",
-    status: "placeholder" as const
-  }
-];
-
 export const talentAreas = [
   "CRO",
   "Meta Ads",
@@ -778,9 +1465,9 @@ export const talentAreas = [
   "CRM",
   "E-mail marketing",
   "Marketplace",
+  "Social Media",
   "Sucesso do cliente",
   "Design para e-commerce",
-  "Conteúdo",
   "Operações"
 ];
 
@@ -793,8 +1480,10 @@ export const validationItems = [
   "Validade de Google Premier Partner, Meta Partner, TikTok, Pinterest e Edrone.",
   "Endereço, horários de atendimento e Perfil da Empresa no Google.",
   "Integração final de CRM, consentimento de cookies e eventos de conversão.",
-  "Mapa de redirecionamentos do blog atual e páginas legadas.",
-  "Divergência de métrica de satisfação exibida no site atual."
+  "Mapa de redirecionamentos do blog legado do WordPress para a nova estrutura.",
+  "Divergência de métrica de satisfação exibida no site atual.",
+  "Anos dos marcos 2021 e 2023 da linha do tempo de crescimento.",
+  "Número exato de pessoas no time exibido na área de crescimento."
 ];
 
 export const redirectPlan = [
@@ -812,9 +1501,9 @@ export const redirectPlan = [
   },
   {
     from: "/blog/[slug-atual]/",
-    to: "/blog/[mesmo-slug]/",
-    status: 200,
+    to: "/",
+    status: 301,
     note:
-      "Rastrear todos os posts antes da migração. Se algum slug mudar, criar 301 individual."
+      "O blog saiu do novo site. Rastrear todos os posts do WordPress e decidir, por URL, entre 301 para a home, para a solução relacionada ou manter o conteúdo no WordPress atual."
   }
 ];

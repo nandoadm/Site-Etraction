@@ -1,5 +1,8 @@
 ---
-import { clients, services, site, validationItems } from "@data/site";
+import BrandIcon from "@components/BrandIcon.astro";
+import { clients, services, site } from "@data/site";
+
+const hasLinkedIn = site.linkedin.startsWith("http");
 ---
 
 <footer class="site-footer">
@@ -11,8 +14,16 @@ import { clients, services, site, validationItems } from "@data/site";
         marketplace, design e acompanhamento próximo.
       </p>
       <div class="footer-social">
-        <a href={site.instagram} target="_blank" rel="noreferrer">Instagram</a>
-        <span>{site.linkedin}</span>
+        <a href={site.instagram} target="_blank" rel="noreferrer">
+          <BrandIcon name="instagram" size={15} />
+          Instagram
+        </a>
+        {hasLinkedIn && (
+          <a href={site.linkedin} target="_blank" rel="noreferrer">
+            <BrandIcon name="linkedin" size={15} />
+            LinkedIn
+          </a>
+        )}
       </div>
     </section>
 
@@ -27,7 +38,7 @@ import { clients, services, site, validationItems } from "@data/site";
       <h2>Institucional</h2>
       <a href="/cases/">Cases</a>
       <a href="/sobre/">Sobre</a>
-      <a href="/blog/">Conteúdos</a>
+      <a href="/crescimento/">Crescimento</a>
       <a href="/carreiras/">Carreiras</a>
       <a href="/contato/">Contato</a>
       <a href="/politica-de-privacidade/">Política de privacidade</a>
@@ -42,13 +53,13 @@ import { clients, services, site, validationItems } from "@data/site";
       <p>CNPJ: {site.cnpj}</p>
       <p>{site.address}</p>
       <p>Telefone: {site.phone}</p>
-      <p>WhatsApp: {site.whatsapp}</p>
+      <a href={site.whatsapp} target="_blank" rel="noreferrer">WhatsApp comercial</a>
       <a href={`mailto:${site.email}`}>{site.email}</a>
     </section>
   </div>
 
   <div class="footer-proof">
-    <p>Clientes citados no site atual, a validar antes da publicação:</p>
+    <p>Algumas das marcas que crescem com a Etraction:</p>
     <ul>
       {clients.slice(0, 6).map((client) => <li>{client.name}</li>)}
     </ul>
@@ -56,6 +67,5 @@ import { clients, services, site, validationItems } from "@data/site";
 
   <div class="footer-bottom">
     <p>© {new Date().getFullYear()} Etraction. Todos os direitos reservados.</p>
-    <p>Itens pendentes de validação: {validationItems.length}</p>
   </div>
 </footer>

@@ -2,24 +2,60 @@
 import { testimonials } from "@data/site";
 ---
 
-<section class="section testimonials-section" data-animate>
+<section class="section testimonials-section" data-testimonials-carousel>
   <div class="section-header">
-    <h2>Depoimentos reais entram como parte da narrativa de resultado.</h2>
+    <div>
+      <p class="section-label">Depoimentos</p>
+      <h2>O que nossos clientes falam sobre nós.</h2>
+    </div>
     <p>
-      Os nomes abaixo aparecem no site atual. A versão final deve validar texto,
-      cargo, relação atual e autorização de uso com cada cliente.
+      Com nome, cargo e segmento de quem escreveu.
     </p>
   </div>
-  <div class="testimonial-list">
-    {testimonials.map((testimonial) => (
-      <article>
-        <p>{testimonial.summary}</p>
-        <footer>
-          <strong>{testimonial.author}</strong>
-          <span>{testimonial.role}, {testimonial.company}</span>
-          <small>{testimonial.segment}. Depoimento a confirmar.</small>
-        </footer>
-      </article>
-    ))}
+
+  <div
+    class="testimonial-carousel"
+    data-embla-carousel="testimonials"
+    aria-roledescription="carousel"
+    aria-label="Depoimentos de clientes"
+  >
+    <div class="embla-viewport" data-embla-viewport>
+      <div class="embla-container">
+        {testimonials.map((testimonial, index) => (
+          <article class={`embla-slide testimonial-card ${index === 0 ? "is-selected" : ""}`} aria-label={`${index + 1} de ${testimonials.length}: ${testimonial.company}`}>
+            <header>
+              <img src={testimonial.logo} alt={`Logo ${testimonial.company}`} width="160" height="96" loading="lazy" decoding="async" />
+              <span>{testimonial.segment}</span>
+            </header>
+            <blockquote>
+              <p class="testimonial-excerpt">{testimonial.excerpt}</p>
+              <details>
+                <summary>Ler depoimento completo</summary>
+                <p>{testimonial.quote}</p>
+              </details>
+            </blockquote>
+            <footer>
+              <strong>{testimonial.author}</strong>
+              <span>{testimonial.role}</span>
+            </footer>
+          </article>
+        ))}
+      </div>
+    </div>
+    <div class="carousel-controls">
+      <button type="button" class="carousel-button" data-embla-prev aria-label="Depoimento anterior">←</button>
+      <div class="carousel-dots" role="tablist" aria-label="Escolher depoimento">
+        {testimonials.map((testimonial, index) => (
+          <button
+            type="button"
+            data-embla-dot
+            data-embla-index={index}
+            aria-label={`Ir para depoimento de ${testimonial.author}`}
+            aria-current={index === 0 ? "true" : undefined}
+          ></button>
+        ))}
+      </div>
+      <button type="button" class="carousel-button" data-embla-next aria-label="Próximo depoimento">→</button>
+    </div>
   </div>
 </section>

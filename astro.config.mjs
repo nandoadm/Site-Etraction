@@ -1,12 +1,10 @@
 import { defineConfig } from "astro/config";
-import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
   site: "https://etraction.com.br",
   output: "static",
   integrations: [
-    react(),
     sitemap({
       changefreq: "weekly",
       priority: 0.7,
@@ -22,7 +20,6 @@ export default defineConfig({
       rollupOptions: {
         output: {
           manualChunks(id) {
-            if (id.includes("three") || id.includes("@react-three")) return "growth-scene";
             if (id.includes("gsap")) return "motion";
           }
         }
