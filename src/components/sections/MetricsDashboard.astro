@@ -1,0 +1,112 @@
+---
+import Icon from "@components/Icon.astro";
+import { dashboardData, metrics } from "@data/site";
+
+const formatter = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 0 });
+const displayMetric = (metric: (typeof metrics)[number]) =>
+  `${metric.prefix}${formatter.format(metric.value)}${metric.suffix}`;
+
+const { tracking, coverage } = dashboardData;
+---
+
+<section class="section metrics-section" id="resultados" data-metrics-dashboard>
+  <div class="section-header">
+    <div>
+      <p class="section-label">
+        <Icon name="chart-column-increasing" size={15} />
+        Resultados
+      </p>
+      <h2>Os números que a Etraction acompanha todos os dias.</h2>
+    </div>
+    <p>
+      Investimento, receita, conversão e recompra lidos em conjunto. É assim que
+      a gente sabe qual é o próximo movimento da sua loja.
+    </p>
+  </div>
+
+  <div class="dashboard" aria-label="Indicadores públicos da Etraction">
+    <div class="dashboard-topbar">
+      <span class="dashboard-tag">
+        <i aria-hidden="true"></i>
+        Indicadores públicos da agência
+      </span>
+      <span class="dashboard-source">Fonte: dados divulgados pela Etraction</span>
+    </div>
+
+    <ul class="dashboard-kpis">
+      {metrics.map((metric, index) => (
+        <li class="kpi-card" data-metric-card style={`--delay:${index * 70}ms`}>
+          <span class="kpi-icon" aria-hidden="true">
+            <Icon name={metric.icon} size={20} />
+          </span>
+          <strong aria-label={metric.ariaLabel}>
+            <span
+              aria-hidden="true"
+              data-count-value={metric.value}
+              data-count-prefix={metric.prefix}
+              data-count-suffix={metric.suffix}
+              data-count-decimals={metric.decimals ?? 0}
+            >
+              {displayMetric(metric)}
+            </span>
+          </strong>
+          <span class="kpi-label">{metric.label}</span>
+          <p>{metric.note}</p>
+        </li>
+      ))}
+    </ul>
+
+    <div class="dashboard-charts">
+      <article class="dashboard-panel">
+        <header>
+          <h3>{tracking.label}</h3>
+          <p>{tracking.caption}</p>
+        </header>
+        <ul class="tracking-groups">
+          {tracking.groups.map((group) => (
+            <li class={`tracking-group tracking-group-${group.key}`}>
+              <h4>
+                <span class="tracking-icon" aria-hidden="true">
+                  <Icon name={group.icon} size={15} />
+                </span>
+                {group.title}
+                <em>{group.detail}</em>
+              </h4>
+              <ul class="tracking-indicators">
+                {group.indicators.map((indicator) => <li>{indicator}</li>)}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </article>
+
+      <article class="dashboard-panel">
+        <header>
+          <h3>{coverage.label}</h3>
+          <p>{coverage.caption}</p>
+        </header>
+        <div class="coverage-groups">
+          {coverage.groups.map((group) => (
+            <section class="coverage-group">
+              <h4>
+                <Icon name={group.icon} size={14} />
+                {group.title}
+              </h4>
+              <ul>
+                {group.items.map((item) => <li>{item}</li>)}
+              </ul>
+            </section>
+          ))}
+        </div>
+        <footer class="dashboard-highlight">
+          <Icon name="shield-check" size={18} />
+          <p>
+            <strong>Google Premier Partner</strong> e <strong>Meta Partner</strong>:
+            selos oficiais das plataformas onde a verba é investida.
+          </p>
+        </footer>
+      </article>
+    </div>
+  </div>
+
+</section>

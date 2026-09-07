@@ -1,0 +1,45 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { site } from "@data/site";
+import { breadcrumbSchema } from "@utils/schema";
+---
+
+<BaseLayout
+  title="Canal LGPD | Etraction"
+  description="Canal para titulares de dados pessoais entrarem em contato com a Etraction sobre privacidade e proteção de dados."
+  structuredData={breadcrumbSchema([{ label: "LGPD", href: "/lgpd/" }])}
+>
+  <Breadcrumbs items={[{ label: "LGPD", href: "/lgpd/" }]} />
+  <article class="legal-page" data-animate>
+    <h1>Canal de comunicação com o titular de dados.</h1>
+    <p>
+      Esta página preserva a finalidade do canal LGPD atual e deve ser conectada
+      ao processo interno responsável por registrar, acompanhar e responder
+      solicitações de titulares.
+    </p>
+
+    <h2>Solicitações atendidas.</h2>
+    <ul>
+      <li>Confirmação de tratamento de dados pessoais.</li>
+      <li>Acesso aos dados tratados.</li>
+      <li>Correção de dados incompletos, inexatos ou desatualizados.</li>
+      <li>Exclusão ou anonimização quando aplicável.</li>
+      <li>Informação sobre compartilhamento com operadores.</li>
+      <li>Revogação de consentimento.</li>
+    </ul>
+
+    <h2>Como enviar.</h2>
+    <p>
+      O canal definitivo precisa ser validado. Até lá, o e-mail público de contato
+      fica indicado como ponto provisório: <a href={`mailto:${site.email}`}>{site.email}</a>.
+    </p>
+
+    <h2>Dados necessários.</h2>
+    <p>
+      Informe nome completo, e-mail utilizado no relacionamento com a Etraction,
+      tipo de solicitação e detalhes suficientes para localização do cadastro. A
+      empresa poderá solicitar confirmação de identidade quando necessário.
+    </p>
+  </article>
+</BaseLayout>

@@ -1,0 +1,30 @@
+---
+import Icon from "@components/Icon.astro";
+import { methodology } from "@data/site";
+---
+
+<section class="section methodology-section" data-animate>
+  <div class="section-header">
+    <div>
+      <p class="section-label">
+        <Icon name="route" size={15} />
+        Como trabalhamos
+      </p>
+      <h2>Uma jornada contínua de diagnóstico, execução e escala.</h2>
+    </div>
+    <p>
+      Mídia, conversão, relacionamento e criatividade na mesma cadência.
+    </p>
+  </div>
+  <ol class="methodology-timeline">
+    {methodology.map((item, index) => (
+      <li data-method-step>
+        <span>{String(index + 1).padStart(2, "0")}</span>
+        <div>
+          <h3>{item.step}</h3>
+          <p>{item.description}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>

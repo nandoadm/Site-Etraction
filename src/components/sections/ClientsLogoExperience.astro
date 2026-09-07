@@ -1,0 +1,42 @@
+---
+import Icon from "@components/Icon.astro";
+import { clients, metrics } from "@data/site";
+
+const clientsMetric = metrics[0];
+---
+
+<section class="section clients-experience" id="clientes" data-clients-logos>
+  <div class="section-header clients-experience-header">
+    <div>
+      <p class="section-label">
+        <Icon name="handshake" size={15} />
+        Clientes
+      </p>
+      <h2>Mais de {clientsMetric.value} e-commerces confiam a operação para a gente.</h2>
+    </div>
+    <p>Moda, casa, fitness, embalagem, decoração e alimentos.</p>
+  </div>
+
+  <div class="clients-logo-stage" data-logo-stage>
+    <ul class="clients-logo-field" aria-label="Clientes atendidos pela Etraction">
+      {clients.map((client) => (
+        <li
+          class={`logo-node logo-node-${client.size}`}
+          data-logo-node
+          data-logo-step={client.position.step}
+          style={`--x:${client.position.x}%; --y:${client.position.y}%; --rotate:${client.position.rotate}deg; --logo-scale:${client.position.scale};`}
+        >
+          <img
+            src={client.logo}
+            alt={`Logo ${client.name}`}
+            width={client.width}
+            height={client.height}
+            loading="lazy"
+            decoding="async"
+          />
+          <span>{client.name}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

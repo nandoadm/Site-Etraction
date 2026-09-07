@@ -1,0 +1,106 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import Icon from "@components/Icon.astro";
+import CommercialForm from "@components/forms/CommercialForm.astro";
+import { ctas, operationalLeaders, site } from "@data/site";
+import { breadcrumbSchema } from "@utils/schema";
+
+const team = Object.values(operationalLeaders).slice(0, 6);
+
+const channels = [
+  { icon: "message-circle", label: "WhatsApp comercial", value: "Resposta no horário comercial", href: site.whatsapp, external: true },
+  { icon: "mail", label: "E-mail", value: site.email, href: `mailto:${site.email}` },
+  { icon: "phone", label: "Telefone", value: site.phone, href: `tel:+55${site.phone.replace(/\D/g, "")}` },
+  { icon: "map-pin", label: "Onde estamos", value: site.address }
+];
+---
+
+<BaseLayout
+  title="Falar com o time de vendas | Etraction"
+  description="Converse com a Etraction sobre crescimento, performance, CRO, mídia paga, CRM, marketplace, design e estratégia para o seu e-commerce."
+  structuredData={breadcrumbSchema([{ label: "Contato", href: "/contato/" }])}
+>
+  <Breadcrumbs items={[{ label: "Contato", href: "/contato/" }]} />
+
+  <section class="page-hero" data-animate>
+    <p class="section-label">
+      <Icon name="message-circle" size={15} />
+      Contato
+    </p>
+    <h1>Conte o desafio da sua loja. A gente devolve o próximo passo.</h1>
+    <p>
+      Você fala direto com o time de vendas da Etraction. A conversa é curta e
+      objetiva: entendemos faturamento, canal, gargalo e urgência para montar o
+      diagnóstico. Sem apresentação genérica e sem proposta no escuro.
+    </p>
+  </section>
+
+  <section class="section" data-animate>
+    <ul class="channel-grid" aria-label="Canais de atendimento">
+      {channels.map((channel) => (
+        <li class="channel-card">
+          <span class="channel-icon" aria-hidden="true">
+            <Icon name={channel.icon} size={20} />
+          </span>
+          <strong>{channel.label}</strong>
+          {channel.href ? (
+            <a
+              href={channel.href}
+              target={channel.external ? "_blank" : undefined}
+              rel={channel.external ? "noreferrer" : undefined}
+            >
+              {channel.value}
+            </a>
+          ) : (
+            <span>{channel.value}</span>
+          )}
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="contact-layout">
+    <div data-animate>
+      <CommercialForm />
+    </div>
+    <aside class="contact-panel" data-animate>
+      <h2>Como funciona o primeiro contato</h2>
+      <p>
+        Sua mensagem cai direto no time de vendas. São eles que entendem o
+        cenário da loja, montam o diagnóstico com você e definem o escopo do
+        projeto.
+      </p>
+      <p>
+        Fechado o contrato, sua conta passa a ter um especialista responsável em
+        cada frente — com nome e rosto:
+      </p>
+      <ul class="contact-team" aria-hidden="true">
+        {team.map((person) => (
+          <li>
+            <img src={person.avatarSmall} alt="" width="44" height="44" loading="lazy" decoding="async" />
+          </li>
+        ))}
+      </ul>
+      <h3>Prefere resolver agora?</h3>
+      <p>
+        Chame no WhatsApp e já adiante o cenário da loja. Assim a conversa começa
+        no ponto certo.
+      </p>
+      <a
+        class="button button-primary"
+        href={ctas.sales.href}
+        target="_blank"
+        rel="noreferrer"
+        data-track-event="cta_click"
+        data-track-label="contato whatsapp"
+      >
+        {ctas.sales.label}
+        <Icon name="arrow-right" size={18} class="button-arrow" />
+      </a>
+      <p class="status-note">
+        CNPJ {site.cnpj}. Atendimento comercial de segunda a sexta.
+      </p>
+    </aside>
+  </section>
+</BaseLayout>

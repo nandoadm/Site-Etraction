@@ -1,0 +1,112 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import Icon from "@components/Icon.astro";
+import { ctas, metrics, testimonials } from "@data/site";
+import { breadcrumbSchema } from "@utils/schema";
+
+// Deriva direto de `metrics` para os rótulos nunca ficarem defasados quando um
+// indicador muda no site.ts.
+const proofPoints = metrics.map((metric) => ({
+  icon: metric.icon,
+  value: `${metric.prefix}${metric.value}${metric.suffix}`,
+  label: metric.label,
+  note: metric.note,
+  ariaLabel: metric.ariaLabel
+}));
+---
+
+<BaseLayout
+  title="Resultados construídos com nossos clientes | Etraction"
+  description="Os números e os relatos de quem cresceu com a Etraction: mais de R$ 1 bilhão em vendas acompanhadas em mais de 100 e-commerces."
+  structuredData={breadcrumbSchema([{ label: "Cases", href: "/cases/" }])}
+>
+  <Breadcrumbs items={[{ label: "Cases", href: "/cases/" }]} />
+
+  <section class="page-hero" data-animate>
+    <p class="section-label">
+      <Icon name="trophy" size={15} />
+      Resultados
+    </p>
+    <h1>Resultados construídos junto com nossos clientes.</h1>
+    <p>
+      Mais de R$ 1 bilhão em vendas acompanhadas, em operações de portes e
+      segmentos bem diferentes. Abaixo estão os números da agência e o que os
+      clientes falam com as próprias palavras.
+    </p>
+  </section>
+
+  <section class="section" data-animate>
+    <ul class="proof-grid" aria-label="Números da Etraction">
+      {proofPoints.map((point) => (
+        <li class="proof-card">
+          <span class="proof-icon" aria-hidden="true">
+            <Icon name={point.icon} size={20} />
+          </span>
+          <strong aria-label={point.ariaLabel}>{point.value}</strong>
+          <span class="proof-label">{point.label}</span>
+          <p>{point.note}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section" data-animate>
+    <div class="section-header">
+      <div>
+        <p class="section-label">
+          <Icon name="quote" size={15} />
+          Na palavra de quem contratou
+        </p>
+        <h2>Relatos completos, publicados com autoria e segmento.</h2>
+      </div>
+      <p>
+        Cada depoimento abaixo está na íntegra, do jeito que o cliente escreveu.
+        É a prova social que a gente consegue mostrar com nome e sobrenome.
+      </p>
+    </div>
+
+    <div class="case-testimonial-list">
+      {testimonials.map((testimonial) => (
+        <article class="case-testimonial">
+          <header>
+            <img src={testimonial.logo} alt={`Logo ${testimonial.company}`} width="150" height="90" loading="lazy" decoding="async" />
+            <span>{testimonial.segment}</span>
+          </header>
+          <blockquote>
+            <p class="case-testimonial-excerpt">{testimonial.excerpt}</p>
+            <details>
+              <summary>Ler depoimento completo</summary>
+              <p>{testimonial.quote}</p>
+            </details>
+          </blockquote>
+          <footer>
+            <strong>{testimonial.author}</strong>
+            <span>{testimonial.role}</span>
+          </footer>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="cta-band" data-animate>
+    <h2>Quer ver os números de uma operação parecida com a sua?</h2>
+    <p>
+      Cases detalhados, com período, investimento e resultado, a gente apresenta
+      na conversa — com a autorização de cada cliente e a fonte dos dados aberta.
+    </p>
+    <div class="hero-actions">
+      <a
+        class="button button-on-dark"
+        href={ctas.sales.href}
+        target="_blank"
+        rel="noreferrer"
+        data-track-event="cta_click"
+        data-track-label="cases vendas"
+      >
+        {ctas.sales.label}
+      </a>
+      <a class="button button-secondary" href="/servicos/">Ver todas as soluções</a>
+    </div>
+  </section>
+</BaseLayout>

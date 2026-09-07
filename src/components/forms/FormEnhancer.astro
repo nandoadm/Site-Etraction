@@ -1,0 +1,90 @@
+---
+const crmEndpoint = import.meta.env.PUBLIC_CRM_ENDPOINT || "";
+---
+
+<script is:inline data-crm-endpoint={crmEndpoint}>
+  const configuredCrmEndpoint = document.currentScript?.getAttribute("data-crm-endpoint") || "";
+  const consentKey = "etraction_cookie_consent";
+  const utmNames = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+
+  function emitEvent(name, detail = {}) {
+    window.dispatchEvent(new CustomEvent(name, { detail }));
+    if (localStorage.getItem(consentKey) === "accepted") {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: name, ...detail });
+    }
+  }
+
+  function ensureHidden(form, name, value) {
+    let input = form.querySelector(`input[name="${name}"]`);
+    if (!input) {
+      input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      form.appendChild(input);
+    }
+    input.value = value;
+  }
+
+  document.querySelectorAll("form[data-enhanced-form]").forEach((form) => {
+    const params = new URLSearchParams(window.location.search);
+    utmNames.forEach((name) => ensureHidden(form, name, params.get(name) || ""));
+    ensureHidden(form, "landing_page", window.location.href);
+    ensureHidden(form, "referrer", document.referrer || "");
+
+    let started = false;
+    form.addEventListener("focusin", () => {
+      if (started) return;
+      started = true;
+      emitEvent(form.dataset.startEvent || "form_start", { form_id: form.id });
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const status = form.querySelector("[data-form-status]");
+      const trap = form.querySelector('[name="website"]');
+      const file = form.querySelector('input[type="file"]');
+
+      if (trap && trap.value) return;
+
+      if (file?.files?.[0] && file.files[0].size > 5 * 1024 * 1024) {
+        if (status) status.textContent = "O arquivo precisa ter até 5 MB.";
+        file.focus();
+        return;
+      }
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const endpoint = form.dataset.endpoint || configuredCrmEndpoint;
+      const formData = new FormData(form);
+      const hasFile = Array.from(formData.values()).some((value) => value instanceof File && value.size > 0);
+      emitEvent(form.dataset.submitEvent || "form_submit", { form_id: form.id });
+
+      if (status) status.textContent = "Enviando informações...";
+
+      if (endpoint) {
+        try {
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: hasFile ? undefined : { "Content-Type": "application/json" },
+            body: hasFile ? formData : JSON.stringify(Object.fromEntries(formData.entries()))
+          });
+          if (!response.ok) throw new Error("Falha no envio");
+          if (status) status.textContent = "Recebemos seus dados. O próximo passo será definido pela equipe comercial.";
+          form.reset();
+        } catch {
+          if (status) status.textContent = "Não foi possível concluir o envio agora. Tente novamente ou use o contato comercial.";
+        }
+        return;
+      }
+
+      if (status) {
+        status.textContent =
+          "Ambiente de demonstração: formulário validado. Configure PUBLIC_CRM_ENDPOINT para ativar o envio.";
+      }
+    });
+  });
+</script>

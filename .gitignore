@@ -1,0 +1,11 @@
+node_modules/
+.astro/
+dist/
+reports/
+.env
+.DS_Store
+
+# Originais de alta resolução: entrada do scripts/prepare-photos.mjs.
+# O site consome as versões .webp geradas em public/assets/.
+/assets/
+/src/components/*.png

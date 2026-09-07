@@ -1,0 +1,66 @@
+---
+/**
+ * Ícone Lucide embutido em build time. Nenhum JavaScript vai para o cliente e
+ * o traço herda `currentColor`, então o ícone acompanha a cor do contexto.
+ *
+ * Já foi testado servir estes ícones por um sprite `<symbol>`/`<use>`: ficou
+ * pior em todas as páginas depois do gzip (+0,6 KB na home, +2,6 KB em
+ * /servicos/), porque a compressão já resolve a repetição e o sprite ainda
+ * carregava ícones que a página não usa. Inline é o caminho medido como melhor.
+ */
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+
+interface Props {
+  name: string;
+  size?: number;
+  strokeWidth?: number;
+  class?: string;
+  label?: string;
+}
+
+const { name, size = 24, strokeWidth = 1.6, class: className, label } = Astro.props;
+
+const require = createRequire(import.meta.url);
+const iconsDir = require.resolve("lucide-static/package.json").replace(/package\.json$/, "icons");
+
+const cache = ((globalThis as Record<string, unknown>).__etractionIconCache ??= new Map<string, string>()) as Map<
+  string,
+  string
+>;
+
+function loadIcon(iconName: string) {
+  const cached = cache.get(iconName);
+  if (cached) return cached;
+
+  let markup: string;
+  try {
+    markup = readFileSync(`${iconsDir}/${iconName}.svg`, "utf8");
+  } catch {
+    throw new Error(`Ícone Lucide "${iconName}" não encontrado em lucide-static.`);
+  }
+
+  // Mantém apenas o miolo do SVG; os atributos são reescritos abaixo.
+  const inner = markup.slice(markup.indexOf(">", markup.indexOf("<svg")) + 1, markup.lastIndexOf("</svg>")).trim();
+  cache.set(iconName, inner);
+  return inner;
+}
+
+const inner = loadIcon(name);
+---
+
+<svg
+  class:list={["icon", className]}
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  role={label ? "img" : undefined}
+  aria-hidden={label ? undefined : "true"}
+  focusable="false"
+  set:html={label ? `<title>${label}</title>${inner}` : inner}
+/>

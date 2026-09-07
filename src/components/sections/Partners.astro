@@ -1,0 +1,48 @@
+---
+import Icon from "@components/Icon.astro";
+import { partners } from "@data/site";
+---
+
+<section class="section partners-section" data-animate>
+  <div class="section-header">
+    <div>
+      <p class="section-label">
+        <Icon name="badge-check" size={15} />
+        Selos e parcerias
+      </p>
+      <h2>Certificados pelas plataformas em que investimos a verba dos clientes.</h2>
+    </div>
+    <p>
+      Não são selos de vitrine: são acesso a suporte, beta e leitura de conta.
+    </p>
+  </div>
+
+  <div class="partner-layout">
+    <section class="partner-block">
+      <h3>Selos oficiais</h3>
+      <ul class="partner-logo-grid">
+        {partners.officialToValidate.map((partner) => (
+          <li>
+            <img
+              src={partner.logo}
+              alt={partner.name}
+              width={partner.width}
+              height={partner.height}
+              loading="lazy"
+              decoding="async"
+            />
+            <span>{partner.name}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="platform-block">
+      <h3>Plataformas em que operamos</h3>
+      <ul>
+        {partners.platforms.map((platform) => <li>{platform}</li>)}
+      </ul>
+      <p>{partners.tools}</p>
+    </section>
+  </div>
+</section>

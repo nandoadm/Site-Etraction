@@ -1,0 +1,27 @@
+{
+  "name": "etraction-institucional",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "visual:check": "node scripts/visual-check.mjs",
+    "photos": "node scripts/prepare-photos.mjs",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.4",
+    "astro": "7.2.10",
+    "embla-carousel": "^8.6.0",
+    "gsap": "3.15.0",
+    "lucide-static": "^1.41.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "playwright-core": "1.62.1",
+    "sharp": "0.35.4",
+    "typescript": "5.9.2"
+  }
+}

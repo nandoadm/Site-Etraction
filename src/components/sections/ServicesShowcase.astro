@@ -1,0 +1,243 @@
+---
+import Icon from "@components/Icon.astro";
+import { homeServices, operationalLeaders } from "@data/site";
+
+const totalServices = homeServices.length;
+const getLeaders = (keys: string[]) => keys.map((key) => operationalLeaders[key]).filter(Boolean);
+
+// Frentes conduzidas pelo time inteiro usam a foto de equipe como visual.
+const teamFallback = {
+  key: "time-etraction",
+  image: "/assets/team/time-etraction.webp",
+  imageSmall: "/assets/team/time-etraction-700.webp",
+  alt: "Time da Etraction reunido em um evento de e-commerce",
+  name: "Time Etraction",
+  role: "Frente conduzida em conjunto"
+};
+
+const mediaFor = (service: (typeof homeServices)[number]) => {
+  const leaders = getLeaders(service.leaderKeys);
+  return leaders.length > 0 ? leaders : [teamFallback];
+};
+---
+
+<section class="section services-showcase" id="servicos" data-services-showcase>
+  <div class="section-header services-showcase-header">
+    <div>
+      <p class="section-label">
+        <Icon name="layers" size={15} />
+        Nossos serviços
+      </p>
+      <h2>Oito frentes, um time só, o mesmo objetivo: fazer sua loja vender mais.</h2>
+    </div>
+    <p>A combinação certa para o gargalo da sua operação, com quem cuida de cada parte.</p>
+  </div>
+
+  <div class="services-desktop" data-services-desktop>
+    <div class="services-pin-shell" data-services-pin>
+      <nav class="service-nav" aria-label="Serviços da Etraction">
+        <span class="service-nav-progress" aria-hidden="true">
+          <i data-service-progress></i>
+        </span>
+        {homeServices.map((service, index) => (
+          <button
+            type="button"
+            data-service-nav
+            data-service-index={index}
+            aria-current={index === 0 ? "true" : undefined}
+            aria-controls={`service-copy-${service.slug}`}
+          >
+            <small>{String(index + 1).padStart(2, "0")}</small>
+            <Icon name={service.icon} size={15} />
+            <span>{service.title}</span>
+          </button>
+        ))}
+      </nav>
+
+      <div class="service-visual-stack" aria-live="polite">
+        {homeServices.map((service, index) => {
+          const media = mediaFor(service);
+          return (
+            <article
+              class={`service-visual-panel ${index === 0 ? "is-active" : ""}`}
+              data-service-visual
+              data-service-index={index}
+              aria-hidden={index === 0 ? "false" : "true"}
+            >
+              <div class="service-photo-composition" data-leader-count={media.length}>
+                {media.map((person: (typeof media)[number]) => (
+                  <figure class="service-leader-card">
+                    <img
+                      src={person.image}
+                      srcset={person.imageSmall ? `${person.imageSmall} 480w, ${person.image} 900w` : undefined}
+                      sizes="(max-width: 980px) 45vw, 420px"
+                      alt={person.alt}
+                      width="900"
+                      height="1125"
+                      loading={index === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                    />
+                    <figcaption>
+                      <strong>{person.name}</strong>
+                      {person.role && <span>{person.role}</span>}
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+              <div class="service-visual-signals" aria-hidden="true">
+                <span>Estratégia</span>
+                <span>Criatividade</span>
+                <span>Performance</span>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <div class="service-copy-stack">
+        {homeServices.map((service, index) => (
+          <article
+            class={`service-copy-panel ${index === 0 ? "is-active" : ""}`}
+            id={`service-copy-${service.slug}`}
+            data-service-copy
+            data-service-index={index}
+            aria-hidden={index === 0 ? "false" : "true"}
+          >
+            <p class="service-step">
+              <span class="service-slide-icon" aria-hidden="true">
+                <Icon name={service.icon} size={18} />
+              </span>
+              {String(index + 1).padStart(2, "0")} / {String(totalServices).padStart(2, "0")}
+            </p>
+            <h3>{service.title}</h3>
+            <p class="service-slide-description">{service.description}</p>
+            <ul class="service-benefits">
+              {service.benefits.map((item) => (
+                <li>
+                  <Icon name="check" size={14} />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <div class="service-slide-actions">
+              <a
+                class="button button-primary service-cta"
+                href={service.cta.href}
+                target={service.cta.external ? "_blank" : undefined}
+                rel={service.cta.external ? "noreferrer" : undefined}
+                data-track-event="cta_click"
+                data-track-label={`serviço ${service.slug}`}
+              >
+                {service.cta.label}
+                <Icon name="arrow-right" size={18} class="button-arrow" />
+              </a>
+              {service.detailSlug && (
+                <a class="service-detail-link" href={`/servicos/${service.detailSlug}/`}>
+                  Ver a página do serviço
+                  <Icon name="arrow-up-right" size={16} />
+                </a>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="service-mobile-carousel"
+    data-embla-carousel="services"
+    aria-roledescription="carrossel"
+    aria-label="Carrossel de serviços"
+  >
+    <div class="embla-viewport" data-embla-viewport>
+      <div class="embla-container">
+        {homeServices.map((service, index) => {
+          const media = mediaFor(service);
+          return (
+            <article
+              class={`embla-slide service-mobile-slide ${index === 0 ? "is-selected" : ""}`}
+              id={`service-mobile-${service.slug}`}
+              aria-label={`${index + 1} de ${totalServices}: ${service.title}`}
+            >
+              <div class="mobile-service-media" data-leader-count={media.length}>
+                {media.map((person: (typeof media)[number]) => (
+                  <figure class="service-leader-card">
+                    <img
+                      src={person.image}
+                      srcset={person.imageSmall ? `${person.imageSmall} 480w, ${person.image} 900w` : undefined}
+                      sizes="(max-width: 980px) 45vw, 420px"
+                      alt={person.alt}
+                      width="900"
+                      height="1125"
+                      loading={index === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                    />
+                    <figcaption>
+                      <strong>{person.name}</strong>
+                      {person.role && <span>{person.role}</span>}
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+              <div class="service-mobile-copy">
+                <p class="service-step">
+                  <span class="service-slide-icon" aria-hidden="true">
+                    <Icon name={service.icon} size={18} />
+                  </span>
+                  {String(index + 1).padStart(2, "0")} / {String(totalServices).padStart(2, "0")}
+                </p>
+                <h3>{service.title}</h3>
+                <p class="service-slide-description">{service.description}</p>
+                <ul class="service-benefits">
+                  {service.benefits.map((item) => (
+                    <li>
+                      <Icon name="check" size={14} />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div class="service-slide-actions">
+                  <a
+                    class="button button-primary service-cta"
+                    href={service.cta.href}
+                    target={service.cta.external ? "_blank" : undefined}
+                    rel={service.cta.external ? "noreferrer" : undefined}
+                  >
+                    {service.cta.label}
+                    <Icon name="arrow-right" size={18} class="button-arrow" />
+                  </a>
+                  {service.detailSlug && (
+                    <a class="service-detail-link" href={`/servicos/${service.detailSlug}/`}>
+                      Ver a página do serviço
+                      <Icon name="arrow-up-right" size={16} />
+                    </a>
+                  )}
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+    <div class="carousel-controls">
+      <button type="button" class="carousel-button" data-embla-prev aria-label="Serviço anterior">
+        <Icon name="arrow-left" size={20} />
+      </button>
+      <div class="carousel-dots" role="tablist" aria-label="Escolher serviço">
+        {homeServices.map((service, index) => (
+          <button
+            type="button"
+            data-embla-dot
+            data-embla-index={index}
+            aria-label={`Ir para ${service.title}`}
+            aria-current={index === 0 ? "true" : undefined}
+          ></button>
+        ))}
+      </div>
+      <button type="button" class="carousel-button" data-embla-next aria-label="Próximo serviço">
+        <Icon name="arrow-right" size={20} />
+      </button>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,122 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import CommercialForm from "@components/forms/CommercialForm.astro";
+import { operationalLeaders, services, type Service } from "@data/site";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "@utils/schema";
+
+export function getStaticPaths() {
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service }
+  }));
+}
+
+const { service } = Astro.props as { service: Service };
+const leader = operationalLeaders[service.leaderKey ?? ""];
+
+if (!leader) {
+  throw new Error(`Serviço "${service.slug}" está sem leaderKey válido em operationalLeaders.`);
+}
+---
+
+<BaseLayout
+  title={`${service.name} | Etraction`}
+  description={service.summary}
+  structuredData={[
+    breadcrumbSchema([
+      { label: "Serviços", href: "/servicos/" },
+      { label: service.name, href: `/servicos/${service.slug}/` }
+    ]),
+    serviceSchema(service),
+    faqSchema(service.faq)
+  ]}
+>
+  <Breadcrumbs items={[
+    { label: "Serviços", href: "/servicos/" },
+    { label: service.name, href: `/servicos/${service.slug}/` }
+  ]} />
+
+  <section class="page-hero" data-animate>
+    <h1>{service.name}</h1>
+    <p>{service.commercialIntro}</p>
+    <div class="hero-actions">
+      <a class="button button-primary" href="/contato/">Falar sobre este serviço</a>
+      <a class="button button-secondary" href="/cases/">Ver resultados</a>
+    </div>
+  </section>
+
+  <div class="service-grid">
+    <div class="service-main">
+      <section class="content-block" data-animate>
+        <h2>Como a frente atua no crescimento.</h2>
+        <p>{service.summary}</p>
+      </section>
+
+      <section class="content-block" data-animate>
+        <h2>Problemas que resolve.</h2>
+        <ul>{service.problems.map((item) => <li>{item}</li>)}</ul>
+      </section>
+
+      <section class="content-block" data-animate>
+        <h2>Entregas principais.</h2>
+        <ul>{service.deliveries.map((item) => <li>{item}</li>)}</ul>
+      </section>
+
+      <section class="content-block" data-animate>
+        <h2>Indicadores acompanhados.</h2>
+        <ul>{service.indicators.map((item) => <li>{item}</li>)}</ul>
+      </section>
+
+      <section class="content-block" data-animate>
+        <h2>Ferramentas e dados usados.</h2>
+        <ul>{service.tools.map((item) => <li>{item}</li>)}</ul>
+      </section>
+
+      <section class="content-block" data-animate>
+        <h2>Metodologia aplicada.</h2>
+        <ul>{service.methodology.map((item) => <li>{item}</li>)}</ul>
+      </section>
+
+      <section class="content-block" data-animate>
+        <h2>Perguntas frequentes.</h2>
+        <div class="faq-list">
+          {service.faq.map((item) => (
+            <details>
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section class="content-block" data-animate>
+        <h2>Converse com a Etraction sobre {service.shortName}.</h2>
+        <CommercialForm />
+      </section>
+    </div>
+
+    <aside class="specialist-panel" data-animate>
+      <img
+        src={leader.image}
+        srcset={`${leader.imageSmall} 480w, ${leader.image} 900w`}
+        sizes="(max-width: 1100px) 92vw, 360px"
+        alt={leader.alt}
+        width="900"
+        height="1125"
+        loading="lazy"
+        decoding="async"
+      />
+      <div>
+        <h2>Quem conduz esta frente</h2>
+        <h3>{leader.name}</h3>
+        <p><strong>{leader.role}</strong></p>
+        <p>
+          Depois que o projeto começa, é {leader.name} quem responde por
+          {` ${service.shortName}`} na sua conta. O primeiro contato, esse você
+          faz com o time de vendas.
+        </p>
+      </div>
+    </aside>
+  </div>
+</BaseLayout>

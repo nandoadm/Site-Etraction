@@ -1,0 +1,70 @@
+---
+import { services } from "@data/site";
+---
+
+<form id="form-comercial" class="lead-form" data-enhanced-form data-start-event="form_start" data-submit-event="form_submit">
+  <input type="text" name="website" tabindex="-1" autocomplete="off" class="honeypot" aria-hidden="true" />
+  <div class="form-grid">
+    <label>
+      Nome
+      <input name="nome" autocomplete="name" required />
+    </label>
+    <label>
+      Empresa
+      <input name="empresa" autocomplete="organization" required />
+    </label>
+    <label>
+      E-mail corporativo
+      <input name="email" type="email" autocomplete="email" required />
+    </label>
+    <label>
+      WhatsApp
+      <input name="whatsapp" type="tel" autocomplete="tel" inputmode="tel" required />
+    </label>
+    <label>
+      URL da loja
+      <input name="url_loja" type="url" placeholder="https://sualoja.com.br" required />
+    </label>
+    <label>
+      Faixa de faturamento
+      <select name="faixa_faturamento" required>
+        <option value="">Selecione</option>
+        <option>Até R$ 100 mil por mês</option>
+        <option>R$ 100 mil a R$ 500 mil por mês</option>
+        <option>R$ 500 mil a R$ 2 milhões por mês</option>
+        <option>Acima de R$ 2 milhões por mês</option>
+        <option>A confirmar</option>
+      </select>
+    </label>
+    <label>
+      Principal desafio
+      <select name="principal_desafio" required>
+        <option value="">Selecione</option>
+        <option>Crescer com previsibilidade</option>
+        <option>Melhorar conversão</option>
+        <option>Reduzir dependência de mídia paga</option>
+        <option>Organizar CRM e recompra</option>
+        <option>Estruturar marketplace</option>
+        <option>Melhorar design e comunicação</option>
+      </select>
+    </label>
+    <label>
+      Serviço de interesse
+      <select name="servico_interesse" required>
+        <option value="">Selecione</option>
+        {services.map((service) => <option value={service.slug}>{service.shortName}</option>)}
+        <option>Diagnóstico integrado</option>
+      </select>
+    </label>
+  </div>
+  <label>
+    Mensagem opcional
+    <textarea name="mensagem" rows="5"></textarea>
+  </label>
+  <label class="checkbox-label">
+    <input type="checkbox" name="consentimento_lgpd" required />
+    <span>Autorizo o uso dos dados para contato comercial, conforme a política de privacidade.</span>
+  </label>
+  <button class="button button-primary" type="submit">Enviar pedido de diagnóstico</button>
+  <p class="form-status" role="status" data-form-status></p>
+</form>

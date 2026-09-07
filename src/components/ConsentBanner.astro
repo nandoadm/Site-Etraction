@@ -1,0 +1,76 @@
+---
+const gtmId = import.meta.env.PUBLIC_GTM_ID || "";
+const ga4Id = import.meta.env.PUBLIC_GA4_ID || "";
+---
+
+<section class="cookie-banner" data-cookie-banner hidden aria-live="polite">
+  <div>
+    <h2>Controle de cookies</h2>
+    <p>
+      Usamos cookies essenciais para funcionamento e, com consentimento, medição de
+      audiência e conversão. Você pode aceitar ou manter apenas o essencial.
+    </p>
+  </div>
+  <div class="cookie-actions">
+    <button type="button" class="button button-secondary" data-cookie-reject>Somente essenciais</button>
+    <button type="button" class="button button-primary" data-cookie-accept>Aceitar medição</button>
+  </div>
+</section>
+
+<script is:inline define:vars={{ gtmId, ga4Id }}>
+  const consentKey = "etraction_cookie_consent";
+  const banner = document.querySelector("[data-cookie-banner]");
+  const accept = document.querySelector("[data-cookie-accept]");
+  const reject = document.querySelector("[data-cookie-reject]");
+  const openButtons = document.querySelectorAll("[data-open-cookie-preferences]");
+
+  function loadAnalytics() {
+    if (!gtmId && !ga4Id) return;
+    window.dataLayer = window.dataLayer || [];
+
+    if (gtmId) {
+      const script = document.createElement("script");
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtm.js?id=${gtmId}`;
+      document.head.appendChild(script);
+      window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
+    }
+
+    if (ga4Id) {
+      const script = document.createElement("script");
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${ga4Id}`;
+      document.head.appendChild(script);
+      window.gtag = function gtag(){ window.dataLayer.push(arguments); };
+      window.gtag("js", new Date());
+      window.gtag("config", ga4Id, { anonymize_ip: true });
+    }
+  }
+
+  function showBanner() {
+    if (banner) banner.hidden = false;
+  }
+
+  function hideBanner() {
+    if (banner) banner.hidden = true;
+  }
+
+  const currentConsent = localStorage.getItem(consentKey);
+  if (currentConsent === "accepted") loadAnalytics();
+  if (!currentConsent) showBanner();
+
+  accept?.addEventListener("click", () => {
+    localStorage.setItem(consentKey, "accepted");
+    hideBanner();
+    loadAnalytics();
+  });
+
+  reject?.addEventListener("click", () => {
+    localStorage.setItem(consentKey, "essential");
+    hideBanner();
+  });
+
+  openButtons.forEach((button) => {
+    button.addEventListener("click", () => showBanner());
+  });
+</script>

@@ -1,0 +1,183 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import Icon from "@components/Icon.astro";
+import { company, growth, metrics, site } from "@data/site";
+import { breadcrumbSchema } from "@utils/schema";
+---
+
+<BaseLayout
+  title="Sobre a Etraction | Agência de performance para e-commerce"
+  description="Conheça a trajetória, a liderança e o jeito de trabalhar da Etraction, agência de performance para e-commerce em Rio do Sul, Santa Catarina."
+  structuredData={breadcrumbSchema([{ label: "Sobre", href: "/sobre/" }])}
+>
+  <Breadcrumbs items={[{ label: "Sobre", href: "/sobre/" }]} />
+
+  <section class="page-hero" data-animate>
+    <p class="section-label">
+      <Icon name="building-2" size={15} />
+      Sobre a Etraction
+    </p>
+    <h1>Crescimento de e-commerce não é campanha. É operação, todo dia.</h1>
+    <p>
+      Desde 2019 a Etraction cuida de aquisição, conversão, relacionamento,
+      marketplace e marca para lojas que querem crescer com previsibilidade — e
+      não com sorte de mês bom.
+    </p>
+  </section>
+
+  <section class="section about-grid" data-animate>
+    <figure class="about-photo">
+      <picture>
+        <source srcset="/assets/team/time-etraction-evento.avif" type="image/avif" />
+        <img
+          src="/assets/team/time-etraction-evento.webp"
+          alt="Equipe da Etraction em um evento de e-commerce"
+          width="760"
+          height="560"
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
+    </figure>
+    <div>
+      <h2>Perto do cliente, exigente com o número, honesto na conversa.</h2>
+      <p>
+        A gente não entrega relatório e some. Cada loja tem um responsável que
+        conhece a operação pelo nome, e cada frente tem um especialista que
+        responde pelo próprio resultado. Quando um indicador cai, você fica
+        sabendo pela gente — com a leitura do que aconteceu e o que vem depois.
+      </p>
+      <p>
+        É esse jeito de trabalhar que sustenta mais de 100 e-commerces ativos e
+        mais de R$ 1 bilhão em vendas acompanhadas.
+      </p>
+      <ul class="hero-metric-strip">
+        {metrics.map((metric) => (
+          <li>
+            <strong>{metric.prefix}{metric.value}{metric.suffix}</strong>
+            <span>{metric.label}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" data-animate>
+    <div class="section-header">
+      <div>
+        <p class="section-label">
+          <Icon name="compass" size={15} />
+          O que nos move
+        </p>
+        <h2>Missão, visão e valores que aparecem na rotina.</h2>
+      </div>
+      <p>
+        Não são frases de parede. São os critérios que a gente usa para decidir
+        uma campanha, contratar alguém ou dizer não a um projeto.
+      </p>
+    </div>
+
+    <div class="purpose-grid">
+      <article class="purpose-card">
+        <span class="purpose-icon" aria-hidden="true"><Icon name="target" size={20} /></span>
+        <h3>Missão</h3>
+        <p>{company.mission}</p>
+      </article>
+      <article class="purpose-card">
+        <span class="purpose-icon" aria-hidden="true"><Icon name="telescope" size={20} /></span>
+        <h3>Visão</h3>
+        <p>{company.vision}</p>
+      </article>
+      <article class="purpose-card purpose-card-values">
+        <span class="purpose-icon" aria-hidden="true"><Icon name="gem" size={20} /></span>
+        <h3>Valores</h3>
+        <ul>
+          {company.values.map((value) => (
+            <li>
+              <Icon name="check" size={14} />
+              <span>{value}</span>
+            </li>
+          ))}
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" data-animate>
+    <div class="section-header">
+      <div>
+        <p class="section-label">
+          <Icon name="users" size={15} />
+          Liderança
+        </p>
+        <h2>Quem responde pela agência.</h2>
+      </div>
+      <p>
+        Sócios acessíveis, presentes na operação e disponíveis para o cliente
+        quando a conversa exige decisão.
+      </p>
+    </div>
+    <div class="leader-grid">
+      {company.administrators.map((leader) => (
+        <article class="leader-card">
+          <img
+            src={leader.photoSmall}
+            srcset={`${leader.photoSmall} 480w, ${leader.photo} 900w`}
+            sizes="(max-width: 820px) 92vw, 300px"
+            alt={`Foto de ${leader.name}`}
+            width="900"
+            height="1125"
+            loading="lazy"
+            decoding="async"
+          />
+          <div>
+            <h3>{leader.name}</h3>
+            <p><strong>{leader.role}</strong></p>
+            <p>{leader.bio}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section" data-animate>
+    <div class="section-header">
+      <div>
+        <p class="section-label">
+          <Icon name="milestone" size={15} />
+          Trajetória
+        </p>
+        <h2>De uma sala em Rio do Sul para mais de 50 pessoas.</h2>
+      </div>
+      <p>
+        A história completa, com a cultura que sustenta esse crescimento, está na
+        <a href="/crescimento/">área de crescimento da Etraction</a>.
+      </p>
+    </div>
+    <ol class="growth-timeline">
+      {growth.timeline.map((item) => (
+        <li>
+          <span class="growth-timeline-year">{item.year}</span>
+          <div>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="cta-band" data-animate>
+    <h2>Quer conhecer a Etraction por dentro?</h2>
+    <p>
+      Sede em {company.headquarters.value}. CNPJ {site.cnpj}. {site.address}.
+    </p>
+    <div class="hero-actions">
+      <a class="button button-on-dark" href="/contato/" data-track-event="cta_click" data-track-label="sobre contato">
+        Falar com o time de vendas
+      </a>
+      <a class="button button-secondary" href="/crescimento/">Conhecer a cultura</a>
+    </div>
+  </section>
+</BaseLayout>

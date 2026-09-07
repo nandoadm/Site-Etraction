@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="900" viewBox="0 0 720 900" role="img" aria-labelledby="title desc">
+  <title id="title">Foto de liderança a confirmar</title>
+  <desc id="desc">Placeholder de desenvolvimento para foto real de liderança da Etraction.</desc>
+  <rect width="720" height="900" fill="#18181b"/>
+  <rect x="48" y="48" width="624" height="804" rx="24" fill="#27272a" stroke="#3f3f46" stroke-width="2"/>
+  <circle cx="360" cy="338" r="112" fill="#52525b"/>
+  <path d="M188 692c24-112 97-172 172-172s148 60 172 172" fill="#52525b"/>
+  <rect x="176" y="736" width="368" height="34" rx="6" fill="#fafafa"/>
+  <rect x="236" y="786" width="248" height="24" rx="6" fill="#e42921"/>
+  <text x="360" y="755" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#18181b">FOTO A CONFIRMAR</text>
+  <text x="360" y="804" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#ffffff">liderança</text>
+</svg>
